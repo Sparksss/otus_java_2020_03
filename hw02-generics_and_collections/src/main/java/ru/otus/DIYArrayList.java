@@ -3,26 +3,30 @@ package ru.otus;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public class DIYAarrayList<T> implements List {
+public class DIYArrayList<E> implements List<E> {
     // Default size of array 10
-    private int size;
+    private int size = 0;
 
     private Object[] elements;
 
-    public DIYAarrayList(int size) {
+    public DIYArrayList(int size) {
         if(size > 0) {
-            this.size = size;
-            this.elements = new Object[this.size];
+            this.elements = new Object[size];
         } else if(size == 0) {
-            this.size = 10;
-            this.elements = new Object[this.size];
+            this.elements = new Object[10];
         } else {
             throw new IllegalArgumentException("Illegal Capacity: " + size);
         }
     }
-    public DIYAarrayList() {
-        this.size = 10;
-        this.elements = new Object[this.size];
+    public DIYArrayList() {
+        this.elements = new Object[10];
+    }
+
+    private void grow() {
+        int s = this.elements.length * 2;
+        Object[] newElements = new Object[s];
+        System.arraycopy(this.elements, 0, newElements, 0,this.elements.length);
+        this.elements = newElements;
     }
 
     @Override
@@ -71,8 +75,11 @@ public class DIYAarrayList<T> implements List {
     }
 
     @Override
-    public boolean add(Object o) {
-        throw new UnsupportedOperationException();
+    public boolean add(E e) {
+        if((this.size + 1) >= this.elements.length) this.grow();
+        this.elements[this.size] = e;
+        this.size++;
+        return true;
     }
 
     @Override
@@ -92,66 +99,70 @@ public class DIYAarrayList<T> implements List {
 
     @Override
     public boolean addAll(int index, Collection c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(Collection c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(Collection c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object get(int index) {
-        return null;
+    @SuppressWarnings("unchecked")
+    public E get(int index) {
+        if(index > -1 && index < this.size) {
+            return (E) this.elements[index];
+        }
+        throw new IndexOutOfBoundsException();
     }
 
     @Override
-    public Object set(int index, Object element) {
-        return null;
+    public E set(int index, Object element) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void add(int index, Object element) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object remove(int index) {
-        return null;
+    public E remove(int index) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator listIterator() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator listIterator(int index) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List subList(int fromIndex, int toIndex) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
