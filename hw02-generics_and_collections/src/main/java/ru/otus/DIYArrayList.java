@@ -69,12 +69,12 @@ public class DIYArrayList<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object[] toArray(Object[] a) {
-        return new Object[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class DIYArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
