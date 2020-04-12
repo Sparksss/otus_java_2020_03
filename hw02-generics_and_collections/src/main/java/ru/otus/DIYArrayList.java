@@ -3,6 +3,7 @@ package ru.otus;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings("unchecked")
 public class DIYArrayList<E> implements List<E> {
     // Default size of array 10
     private int size = 0;
@@ -45,8 +46,9 @@ public class DIYArrayList<E> implements List<E> {
     }
 
     @Override
-    public void sort(Comparator c) {
-
+    @SuppressWarnings("unchecked")
+    public void sort(Comparator<? super E> c) {
+        Arrays.sort((E[]) this.elements, 0, size, c);
     }
 
     @Override
@@ -127,8 +129,10 @@ public class DIYArrayList<E> implements List<E> {
     }
 
     @Override
-    public E set(int index, Object element) {
-        throw new UnsupportedOperationException();
+    @SuppressWarnings("unchecked")
+    public E set(int index, E element) {
+        this.elements[index] = element;
+        return element;
     }
 
     @Override
