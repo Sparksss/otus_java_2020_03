@@ -1,6 +1,7 @@
 package ru.otus;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unchecked")
@@ -136,13 +137,23 @@ public class DIYArrayList<E> implements List<E> {
     }
 
     @Override
-    public void add(int index, Object element) {
-        throw new UnsupportedOperationException();
+    public void add(int index, E element) {
+        this.elements[index] = element;
     }
 
     @Override
     public E remove(int index) {
-        throw new UnsupportedOperationException();
+        Object[] newElements = new Object[this.elements.length -1];
+        Object removedElement = this.elements[index];
+        this.elements[index] = null;
+        for(int i = 0, j = 0; i < this.elements.length; i++) {
+            if(this.elements[i] != null) {
+                newElements[j] = this.elements[i];
+                j++;
+            }
+        }
+        this.elements = newElements;
+        return (E) removedElement;
     }
 
     @Override
@@ -157,16 +168,114 @@ public class DIYArrayList<E> implements List<E> {
 
     @Override
     public ListIterator listIterator() {
-        throw new UnsupportedOperationException();
+        return new ListItr(0);
     }
 
     @Override
     public ListIterator listIterator(int index) {
-        throw new UnsupportedOperationException();
+        return new ListItr(index);
     }
 
     @Override
     public List subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
     }
+
+    private class Itr implements Iterator<E> {
+        int cursor;       // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
+
+        // prevent creating a synthetic constructor
+        Itr() {}
+
+        public boolean hasNext() {
+            return cursor != size;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E next() {
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            Object[] elementData = DIYArrayList.this.elements;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i + 1;
+            return (E) elementData[lastRet = i];
+        }
+
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+
+            try {
+                DIYArrayList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+         throw new UnsupportedOperationException();
+        }
+
+    }
+
+
+    private class ListItr extends Itr implements ListIterator<E> {
+        ListItr(int index) {
+            super();
+            cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E previous() {
+            int i = cursor - 1;
+            if (i < 0)
+                throw new NoSuchElementException();
+            Object[] elementData = elements;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i;
+            return (E) elementData[lastRet = i];
+        }
+
+        public void set(E e) {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+
+            try {
+                DIYArrayList.this.set(lastRet, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void add(E e) {
+            try {
+                int i = cursor;
+                DIYArrayList.this.add(i, e);
+                cursor = i + 1;
+                lastRet = -1;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
+
 }
