@@ -4,43 +4,87 @@ import ru.otus.ClassTest;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+
 
 public class Reflection {
-    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static void main(String[] args) {
+        startTest(ClassTest.class.getCanonicalName());
+    }
 
-        Class<ClassTest> clazz = ClassTest.class;
-//
-//        System.out.println("Package Name: " + classString.getPackageName());
-//
-//        Constructor<?>[] constructors = classString.getConstructors();
-//        System.out.println("--- constructors");
-//        System.out.println(Arrays.toString(constructors));
-//
-        Method[] methods = clazz.getDeclaredMethods();
-        System.out.println("--- methods");
-        HashMap<String ,Annotation[]> annotations = new HashMap<>();
+    public static void startTest(String className) {
 
-        Arrays.stream(methods).forEach(method -> System.out.println(method.getName()));
-//
-//        System.out.println("--- fields");
-//        Field[] fields = classString.getDeclaredFields();
-//        Arrays.stream(fields).forEach(field -> System.out.println(field.getName()));
-//
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("startTest");
 
-        System.out.println("--- annotations:");
-        Method annotatedMethod = clazz.getMethod("init");
-        Annotation[] annotations = annotatedMethod.getDeclaredAnnotations();
-        System.out.println(Arrays.toString(annotations));
+        int total = 0;
+        int failCount = 0;
+        int successCount = 0;
 
-//        Class<ClassTest> clazz = ClassTest.class;
-//        Constructor<ClassTest> constructor = clazz.getDeclaredConstructor();
-//        ClassTest object = constructor.newInstance();
-//        System.out.println("value :" + object.getFirstField());
+
+        try {
+            Class<?> clazz = Class.forName(className);
+            Method[] methods = clazz.getDeclaredMethods();
+            ArrayList<String> beforeMethods = getAnnotatedMethods(methods, "Before");
+            ArrayList<String> testMethods = getAnnotatedMethods(methods, "Test");
+            ArrayList<String> afterMethods = getAnnotatedMethods(methods, "After");
+            total = testMethods.size();
+
+
+
+            Object testObject = getInstance(clazz);
+            for(String methodName : beforeMethods) {
+                clazz.getDeclaredMethod(methodName).invoke(testObject);
+            }
+
+            for(String methodName : testMethods) {
+                try {
+                    clazz.getDeclaredMethod(methodName).invoke(testObject);
+                    successCount++;
+                } catch (Exception e) {
+                    failCount++;
+                }
+
+            }
+
+            for(String methodName : afterMethods) {
+                clazz.getDeclaredMethod(methodName).invoke(testObject);
+            }
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("Total tests : " + total);
+        System.out.println("Successful tests : " + successCount);
+        System.out.println("Failed tests : " + failCount);
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("Test Finished");
+        System.out.println("-----------------------------------------------------------------");
+    }
+
+    private static ArrayList<String> getAnnotatedMethods(Method[] methods, String findAnnotation){
+        ArrayList<String> annotatedMethods = new ArrayList<>();
+        for(Method method : methods ){
+            method.setAccessible(true);
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            for(Annotation annotation : annotations ) {
+                String annotationName = annotation.toString();
+                if(annotationName.contains(findAnnotation)) {
+                    annotatedMethods.add(method.getName());
+                }
+            }
+        }
+        return annotatedMethods;
+    }
+
+    private static <T> T getInstance(Class<T> type) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<T> constr = type.getDeclaredConstructor();
+        constr.setAccessible(true);
+        return constr.newInstance();
     }
 }
