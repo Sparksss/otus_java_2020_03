@@ -3,4 +3,5 @@
 rootProject.name = 'otusJava'
 include 'hw01-gradle'
 include 'hw02-generics_and_collections'
+include 'hw03-test_framework'
 
