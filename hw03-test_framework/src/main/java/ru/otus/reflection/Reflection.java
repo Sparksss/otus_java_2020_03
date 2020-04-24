@@ -27,21 +27,21 @@ public class Reflection {
         try {
             Class<?> clazz = Class.forName(className);
             Method[] methods = clazz.getDeclaredMethods();
-            ArrayList<String> beforeMethods = getAnnotatedMethods(methods, "Before");
-            ArrayList<String> testMethods = getAnnotatedMethods(methods, "Test");
-            ArrayList<String> afterMethods = getAnnotatedMethods(methods, "After");
+            ArrayList<Method> beforeMethods = getAnnotatedMethods(methods, "Before");
+            ArrayList<Method> testMethods = getAnnotatedMethods(methods, "Test");
+            ArrayList<Method> afterMethods = getAnnotatedMethods(methods, "After");
             total = testMethods.size();
 
 
 
             Object testObject = getInstance(clazz);
-            for(String methodName : beforeMethods) {
-                clazz.getDeclaredMethod(methodName).invoke(testObject);
+            for(Method method : beforeMethods) {
+                  method.invoke(testObject);
             }
 
-            for(String methodName : testMethods) {
+            for(Method method : testMethods) {
                 try {
-                    clazz.getDeclaredMethod(methodName).invoke(testObject);
+                    method.invoke(testObject);
                     successCount++;
                 } catch (Exception e) {
                     failCount++;
@@ -49,8 +49,8 @@ public class Reflection {
 
             }
 
-            for(String methodName : afterMethods) {
-                clazz.getDeclaredMethod(methodName).invoke(testObject);
+            for(Method method : afterMethods) {
+                method.invoke(testObject);
             }
 
 
@@ -67,15 +67,15 @@ public class Reflection {
         System.out.println("-----------------------------------------------------------------");
     }
 
-    private static ArrayList<String> getAnnotatedMethods(Method[] methods, String findAnnotation){
-        ArrayList<String> annotatedMethods = new ArrayList<>();
+    private static ArrayList<Method> getAnnotatedMethods(Method[] methods, String findAnnotation){
+        ArrayList<Method> annotatedMethods = new ArrayList<>();
         for(Method method : methods ){
             method.setAccessible(true);
             Annotation[] annotations = method.getDeclaredAnnotations();
             for(Annotation annotation : annotations ) {
                 String annotationName = annotation.toString();
                 if(annotationName.contains(findAnnotation)) {
-                    annotatedMethods.add(method.getName());
+                    annotatedMethods.add(method);
                 }
             }
         }
