@@ -33,26 +33,14 @@ public class Reflection {
             total = testMethods.size();
 
 
-
-            Object testObject = getInstance(clazz);
-            for(Method method : beforeMethods) {
-                  method.invoke(testObject);
-            }
-
-            for(Method method : testMethods) {
+            for(Method test : testMethods) {
                 try {
-                    method.invoke(testObject);
+                    runTests(clazz, beforeMethods, test, afterMethods);
                     successCount++;
                 } catch (Exception e) {
                     failCount++;
                 }
-
             }
-
-            for(Method method : afterMethods) {
-                method.invoke(testObject);
-            }
-
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -86,5 +74,18 @@ public class Reflection {
         Constructor<T> constr = type.getDeclaredConstructor();
         constr.setAccessible(true);
         return constr.newInstance();
+    }
+
+    private static <T> void runTests(Class<T> clazz, ArrayList<Method> beforeMethods, Method test, ArrayList<Method> afterMethods) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        Object testObject = getInstance(clazz);
+        for(Method before : beforeMethods) {
+            before.invoke(testObject);
+        }
+
+        test.invoke(testObject);
+
+        for(Method after : afterMethods) {
+            after.invoke(testObject);
+        }
     }
 }
