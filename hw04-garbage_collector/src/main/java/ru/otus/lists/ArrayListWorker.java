@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayListWorker {
-    private List<Integer> numbers = new ArrayList<>();
+    private static List<Integer> numbers = new ArrayList<>();
 
     public void addRandomElements(int count) {
+        Integer counter = 0;
         for(int i = 0; i < count; i++) {
-            Integer n = Math.toIntExact(Math.round(Math.random() * 100));
-            numbers.add(n);
+            counter += Integer.valueOf(1);
+            Integer c = 10;
+            Integer a = 10;
+            Integer f = a + c;
+            numbers.add(counter);
         }
     }
 
