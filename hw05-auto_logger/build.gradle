@@ -8,7 +8,7 @@ targetCompatibility = JavaVersion.VERSION_13
 
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava'
+    implementation 'org.ow2.asm:asm-commons'
 }
 
 shadowJar {
