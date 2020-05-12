@@ -16,6 +16,7 @@ shadowJar {
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
+        attributes 'Premain-Class' : 'ru.otus.Agent'
         attributes 'Main-Class': 'ru.otus.AutoLogger'
     }
 }

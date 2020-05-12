@@ -10,6 +10,5 @@ public class TestLogging {
 
     @Log
     public void calculation(int param) {
-
     }
 }

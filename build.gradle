@@ -23,6 +23,7 @@ allprojects {
         mavenCentral()
     }
 
+    apply plugin: 'idea'
     apply plugin: "io.spring.dependency-management"
     dependencyManagement {
         dependencies {

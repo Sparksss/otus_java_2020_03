@@ -4,8 +4,12 @@
 
 package ru.otus;
 
+
 public class AutoLogger {
     public static void main(String[] args) {
-        new TestLogging().calculation(10);
+
+        TestLogging test = new TestLogging();
+        test.calculation(1);
+
     }
 }
