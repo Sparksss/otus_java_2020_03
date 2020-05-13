@@ -15,9 +15,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.invoke.*;
 import java.security.ProtectionDomain;
-import java.lang.instrument.ClassFileTransformer;
-import java.security.spec.RSAOtherPrimeInfo;
-import java.util.*;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -25,19 +22,15 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import javax.swing.*;
-import javax.swing.text.LabelView;
-
 import static org.objectweb.asm.Opcodes.H_INVOKESTATIC;
 
 
 public class Agent {
 
     private static boolean isChangeMethod = false;
+    private static String nameOfMethod = null;
 
     public static void premain(String agentArgs, Instrumentation inst) {
-
-        System.out.println("premain");
 
         inst.addTransformer(new ClassFileTransformer() {
             @Override
@@ -47,21 +40,22 @@ public class Agent {
                                     ProtectionDomain protectionDomain,
                                     byte[] classfileBuffer) throws IllegalClassFormatException {
                     if(className.contains("ru/otus/")) {
-                        return changeMethod(classfileBuffer, className);
+                        return changeMethod(classfileBuffer);
                     }
                     return classfileBuffer;
             }
         });
     }
 
-    private static byte[] changeMethod(byte[] originalClass, String cn) {
+    private static byte[] changeMethod(byte[] originalClass) {
         ClassReader reader = new ClassReader(originalClass);
         ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
         ClassVisitor visitor = new ClassVisitor(Opcodes.ASM5, writer) {
 
             @Override
             public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions){
-                System.out.println("visitMethod: access="+access+" name="+name+" desc="+descriptor+" signature="+signature+" exceptions="+exceptions);
+//                System.out.println("visitMethod: access="+access+" name="+name+" desc="+descriptor+" signature="+signature+" exceptions="+exceptions);
+                Agent.nameOfMethod = name;
                 MethodVisitor mv = new MethodAnnotationScanner(Opcodes.ASM5, super.visitMethod(access, name, descriptor, signature, exceptions));
                 return mv;
             }
@@ -69,13 +63,17 @@ public class Agent {
 
         reader.accept(visitor, Opcodes.ASM5);
 
-
-
+//        byte[] finalClass = writer.toByteArray();
+//
+//        try (OutputStream fos = new FileOutputStream("TestLogging.class")) {
+//            fos.write(finalClass);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return writer.toByteArray();
     }
 
     static class MethodAnnotationScanner extends MethodVisitor {
-
 
         public MethodAnnotationScanner(int api, MethodVisitor methodVisitor) {
             super(api, methodVisitor);
@@ -83,7 +81,7 @@ public class Agent {
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
+//            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
             if(desc.contains("ru/otus/annotations/Log")) {
                 Agent.isChangeMethod = true;
                 return super.visitAnnotation(desc, visible);
@@ -103,7 +101,7 @@ public class Agent {
                         false);
                 super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
                 super.visitVarInsn(Opcodes.ILOAD, 1);
-                super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "execution method with param:\u0001");
+                super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "executed method: " + Agent.nameOfMethod  +", param:\u0001");
                 super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
                 super.visitMaxs(0, 0);
             }

@@ -8,8 +8,12 @@ import ru.otus.annotations.Log;
 
 public class TestLogging {
 
+    public int getInt() {
+        return 100;
+    }
+
     @Log
-    public void calc(int par) {
+    public void calc(int param) {
 
     }
 
