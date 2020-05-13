@@ -69,40 +69,10 @@ public class Agent {
 
         reader.accept(visitor, Opcodes.ASM5);
 
-//        if(originalNamesOfMethods.size() > 0) {
-//            for (String name : originalNamesOfMethods) {
-//                ArrayList<String> params = methodsParameters.get(name);
-//                String[] exceptions = methodExceptions.get(name);
-//                changeMethod(writer, name, params.get(0), params.get(1), exceptions, cn);
-//            }
-//        }
+
 
         return writer.toByteArray();
     }
-
-
-    private static void changeMethod(ClassWriter writer, String name, String descriptor, String signature, String[] exceptions, String className) {
-        String newNameMethod = name + "Log";
-        writer.visitMethod(Opcodes.ACC_PUBLIC, name, descriptor, signature, exceptions);
-        MethodVisitor mv = writer.visitMethod(Opcodes.ACC_PUBLIC, newNameMethod, descriptor, signature, exceptions);
-        Handle handle = new Handle(
-                H_INVOKESTATIC,
-                Type.getInternalName(java.lang.invoke.StringConcatFactory.class),
-                "makeConcatWithConstants",
-                MethodType.methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class, String.class, Object[].class).toMethodDescriptorString(),
-                false);
-        mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-        mv.visitVarInsn(Opcodes.ILOAD, 1);
-        mv.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "execution method with param:\u0001");
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ILOAD, 1);
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, newNameMethod, "(I)V", false);
-        mv.visitInsn(Opcodes.RETURN);
-        mv.visitMaxs(0, 0);
-        mv.visitEnd();
-    }
-
 
     static class MethodAnnotationScanner extends MethodVisitor {
 

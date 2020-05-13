@@ -11,6 +11,7 @@ public class AutoLogger {
         TestLogging test = new TestLogging();
         test.calculation(1);
         test.calculation(5);
+        test.calc(10);
 
     }
 }
