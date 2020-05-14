@@ -28,7 +28,6 @@ import static org.objectweb.asm.Opcodes.H_INVOKESTATIC;
 public class Agent {
 
     private static boolean isChangeMethod = false;
-    private static String nameOfMethod = null;
 
     public static void premain(String agentArgs, Instrumentation inst) {
 
@@ -55,8 +54,7 @@ public class Agent {
             @Override
             public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions){
 //                System.out.println("visitMethod: access="+access+" name="+name+" desc="+descriptor+" signature="+signature+" exceptions="+exceptions);
-                Agent.nameOfMethod = name;
-                MethodVisitor mv = new MethodAnnotationScanner(Opcodes.ASM5, super.visitMethod(access, name, descriptor, signature, exceptions));
+                MethodVisitor mv = new MethodAnnotationScanner(Opcodes.ASM5, super.visitMethod(access, name, descriptor, signature, exceptions), name);
                 return mv;
             }
         };
@@ -75,8 +73,11 @@ public class Agent {
 
     static class MethodAnnotationScanner extends MethodVisitor {
 
-        public MethodAnnotationScanner(int api, MethodVisitor methodVisitor) {
+        public String methodName = null;
+
+        public MethodAnnotationScanner(int api, MethodVisitor methodVisitor, String methodName) {
             super(api, methodVisitor);
+            this.methodName = methodName;
         }
 
         @Override
@@ -101,7 +102,7 @@ public class Agent {
                         false);
                 super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
                 super.visitVarInsn(Opcodes.ILOAD, 1);
-                super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "executed method: " + Agent.nameOfMethod  +", param:\u0001");
+                super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "executed method: " + this.methodName  +", param:\u0001");
                 super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
                 super.visitMaxs(0, 0);
             }
