@@ -27,8 +27,6 @@ import static org.objectweb.asm.Opcodes.H_INVOKESTATIC;
 
 public class Agent {
 
-    private static boolean isChangeMethod = false;
-
     public static void premain(String agentArgs, Instrumentation inst) {
 
         inst.addTransformer(new ClassFileTransformer() {
@@ -73,7 +71,8 @@ public class Agent {
 
     static class MethodAnnotationScanner extends MethodVisitor {
 
-        public String methodName = null;
+        private String methodName = null;
+        private boolean isChangeMethod = false;
 
         public MethodAnnotationScanner(int api, MethodVisitor methodVisitor, String methodName) {
             super(api, methodVisitor);
@@ -84,16 +83,16 @@ public class Agent {
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 //            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
             if(desc.contains("ru/otus/annotations/Log")) {
-                Agent.isChangeMethod = true;
+                this.isChangeMethod = true;
                 return super.visitAnnotation(desc, visible);
             }
-            Agent.isChangeMethod = false;
+            this.isChangeMethod = false;
             return super.visitAnnotation(desc, visible);
         }
 
         @Override
         public void visitCode() {
-            if(Agent.isChangeMethod) {
+            if(this.isChangeMethod) {
                 Handle handle = new Handle(
                         H_INVOKESTATIC,
                         Type.getInternalName(java.lang.invoke.StringConcatFactory.class),
