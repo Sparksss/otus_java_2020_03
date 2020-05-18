@@ -128,7 +128,7 @@ public class Agent {
                             ++i;
                         } else if (arg.getDescriptor().equals("F")) {
                             super.visitVarInsn(Opcodes.FLOAD, i);
-                        } else {
+                        } else if(arg.getDescriptor().equals("")) {
                             super.visitVarInsn(Opcodes.ILOAD, i);
                         }
                         i++;
@@ -142,6 +142,7 @@ public class Agent {
                             MethodType.methodType(CallSite.class, MethodHandles.Lookup.class, String.class, MethodType.class, String.class, Object[].class).toMethodDescriptorString(),
                             false);
                     this.descriptor.append(")Ljava/lang/String;");
+                    super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
                     super.visitInvokeDynamicInsn("makeConcatWithConstants", this.descriptor.toString(), handle, "executed method: " + this.thisMethod.getName()  + ", param: \u0001".repeat(i));
 //                    super.visitVarInsn(Opcodes.ILOAD, 1);
 //                    super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "executed method: " + this.thisMethod.getName()  + ", param:\u0001");
