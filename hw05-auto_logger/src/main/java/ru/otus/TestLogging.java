@@ -6,6 +6,8 @@ package ru.otus;
 
 import ru.otus.annotations.Log;
 
+import java.lang.invoke.StringConcatFactory;
+
 public class TestLogging {
 
     public int getInt() {
@@ -13,12 +15,11 @@ public class TestLogging {
     }
 
     @Log
-    public void calc(int param) {
-
+    public void calc(int param1, float param2, double param3) {
     }
 
     @Log
-    public void calculation(int param) {
+    public void calculation() {
     }
 
 }
