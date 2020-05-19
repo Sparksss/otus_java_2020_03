@@ -82,7 +82,6 @@ public class Agent {
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-//            System.out.println("visitAnnotation: desc="+desc+" visible="+visible);
             if(desc.contains("ru/otus/annotations/Log")) {
                 this.isChangeMethod = true;
                 return super.visitAnnotation(desc, visible);
