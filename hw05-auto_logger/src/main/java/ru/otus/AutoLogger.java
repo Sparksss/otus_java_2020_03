@@ -14,7 +14,7 @@ public class AutoLogger {
 //        test.calc(10, 10.22332323D, 100.0000000D, 100.10F, true, 'U');
 //        test.calc(10, 10222.2324324432D, 10.2343F, true, 'C');
 //        test.calc(10.4454324324D);
-//        test.calc(10,10.00F,10000.43432D);
+        test.calc(10,"param2",10000.43432D);
 
     }
 }
