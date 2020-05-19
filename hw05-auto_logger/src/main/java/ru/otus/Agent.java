@@ -11,7 +11,6 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.invoke.*;
-import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 
 import org.objectweb.asm.ClassReader;
