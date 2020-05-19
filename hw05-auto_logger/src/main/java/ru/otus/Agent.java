@@ -1,10 +1,6 @@
-/**
- * Created by Ilya Rogatkin, May 2020
- */
 
 package ru.otus;
 
-// java -javaagent:/home/test/Projects/otus_java_2020_03/hw05-auto_logger/build/libs/loggerHW05-0.1.jar -jar /home/test/Projects/otus_java_2020_03/hw05-auto_logger/build/libs/loggerHW05-0.1.jar
 
 import org.objectweb.asm.*;
 
@@ -54,16 +50,8 @@ public class Agent {
 
             @Override
             public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions){
-//                System.out.println("visitMethod: access="+access+" name="+name+" desc="+descriptor+" signature="+signature+" exceptions="+exceptions);
+                System.out.println("visitMethod: access="+access+" name="+name+" desc="+descriptor+" signature="+signature+" exceptions="+exceptions);
                 Method thisMethod = new Method(name, descriptor);
-//                if(name.equals("calc")) {
-//                    for(Type arg : thisMethod.getArgumentTypes()){
-//                        System.out.print(arg.getDescriptor()+ ": ");
-//                        System.out.println(arg.getOpcode(Opcodes.ILOAD));
-//                        System.out.println("Size of arg");
-//                        System.out.println(arg.getSize());
-//                    }
-//                }
 
                 MethodVisitor mv = new MethodAnnotationScanner(Opcodes.ASM5, super.visitMethod(access, name, descriptor, signature, exceptions), thisMethod, className);
                 return mv;
@@ -128,12 +116,11 @@ public class Agent {
                             ++i;
                         } else if (arg.getDescriptor().equals("F")) {
                             super.visitVarInsn(Opcodes.FLOAD, i);
-                        } else if(arg.getDescriptor().equals("")) {
+                        } else if(arg.getDescriptor().equals("I")) {
                             super.visitVarInsn(Opcodes.ILOAD, i);
                         }
                         i++;
                     }
-
 
                     Handle handle = new Handle(
                             H_INVOKESTATIC,
@@ -144,8 +131,6 @@ public class Agent {
                     this.descriptor.append(")Ljava/lang/String;");
                     super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
                     super.visitInvokeDynamicInsn("makeConcatWithConstants", this.descriptor.toString(), handle, "executed method: " + this.thisMethod.getName()  + ", param: \u0001".repeat(i));
-//                    super.visitVarInsn(Opcodes.ILOAD, 1);
-//                    super.visitInvokeDynamicInsn("makeConcatWithConstants", "(I)Ljava/lang/String;", handle, "executed method: " + this.thisMethod.getName()  + ", param:\u0001");
                     super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
                     super.visitMaxs(0, 0);
                 }
@@ -157,14 +142,4 @@ public class Agent {
         }
     }
 
-//    private static int getLoadOpcodeByDescriptor(String loadParam) {
-//        Map<String, Integer> codes = new HashMap<>();
-//        codes.put("I", Opcodes.ILOAD);
-//        codes.put("J", Opcodes.LLOAD);
-//        codes.put("F", Opcodes.FLOAD);
-//        codes.put("D", Opcodes.DLOAD);
-//        codes.put("Z", Opcodes.ILOAD);
-//        codes.put("C", Opcodes.ILOAD);
-//        return codes.get(loadParam);
-//    }
 }
