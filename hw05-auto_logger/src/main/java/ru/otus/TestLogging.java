@@ -17,7 +17,7 @@ public class TestLogging {
     }
 
     @Log
-    public void calculation() {
+    public void calculation(int param) {
     }
 
 }
