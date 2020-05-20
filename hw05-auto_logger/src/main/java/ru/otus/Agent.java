@@ -72,7 +72,8 @@ public class Agent {
     static class MethodAnnotationScanner extends MethodVisitor {
 
         private boolean isChangeMethod = false;
-        private final String name, descriptor;
+        private final String name;
+        private final String descriptor;
 
         public MethodAnnotationScanner(int api, String name, String methodDescriptor, MethodVisitor methodVisitor) {
             super(api, methodVisitor);
