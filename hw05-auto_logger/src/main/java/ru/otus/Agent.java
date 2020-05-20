@@ -95,9 +95,11 @@ public class Agent {
         public void visitCode() {
             if(this.isChangeMethod) {
                 super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-                int varIndex = 1, numArgs = 0, p;
-                for(p = 1; descriptor.charAt(p) != ')'; p++) {
-                    switch(descriptor.charAt(p)) {
+                int varIndex = 1;
+                int numArgs = 0;
+                int index = 1;
+                while(this.getParameterSignatureByIndex(descriptor, index) != ')') {
+                    switch(this.getParameterSignatureByIndex(descriptor, index)) {
                         case 'J':
                             super.visitVarInsn(Opcodes.LLOAD, varIndex); ++varIndex; break;
                         case 'D':
@@ -105,21 +107,22 @@ public class Agent {
                         case 'F': super.visitVarInsn(Opcodes.FLOAD, varIndex); break;
                         case 'I': super.visitVarInsn(Opcodes.ILOAD, varIndex); break;
                         case 'L': super.visitVarInsn(Opcodes.ALOAD, varIndex);
-                            p = descriptor.indexOf(';', p);
+                            index = descriptor.indexOf(';', index);
                             break;
                         case '[': super.visitVarInsn(Opcodes.ALOAD, varIndex);
-                            do {} while(descriptor.charAt(++p)=='[');
-                            if(descriptor.charAt(p) == 'L') p = descriptor.indexOf(';', p);
+                            do {} while(descriptor.charAt(++index)=='[');
+                            if(descriptor.charAt(index) == 'L') index = descriptor.indexOf(';', index);
                             break;
                         default: throw new IllegalStateException(descriptor);
                     }
                     varIndex++;
                     numArgs++;
+                    index++;
                 }
 
                 String ret = "Ljava/lang/String;";
-                String concatSig = new StringBuilder(++p + ret.length())
-                        .append(descriptor, 0, p).append(ret).toString();
+                String concatSig = new StringBuilder(++index + ret.length())
+                        .append(descriptor, 0, index).append(ret).toString();
 
                 Handle handle = new Handle(
                         H_INVOKESTATIC,
@@ -135,6 +138,10 @@ public class Agent {
                         "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
             }
                 super.visitCode();
+        }
+
+        private char getParameterSignatureByIndex(String descriptor, int index) {
+            return descriptor.charAt(index);
         }
     }
 
