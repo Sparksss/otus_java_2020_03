@@ -6,6 +6,10 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_13
 targetCompatibility = JavaVersion.VERSION_13
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     // This dependency is used by the application.
     testImplementation 'org.junit.jupiter:junit-jupiter-api'

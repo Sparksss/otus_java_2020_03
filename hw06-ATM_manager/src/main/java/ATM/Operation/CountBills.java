@@ -9,7 +9,7 @@ public class CountBills implements Operation {
     public int action(int needSum, int countBills, Value denomination) {
         int val = denomination.getValue();
         int availableBills = 0;
-        while (needSum > 0 & countBills > 0) {
+        while (needSum >= val & countBills > 0) {
             needSum -= val;
             countBills--;
             availableBills++;

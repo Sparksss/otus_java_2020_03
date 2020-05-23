@@ -12,42 +12,42 @@ import java.util.Map;
 
 public class ATM {
 
-    private Map<Value, Integer> value = new HashMap<>();
+    private Map<Value, Integer> value;
 
     private int ZERO_BILLS = 0;
 
     public ATM() {
+        this.value = new HashMap<>();
         value.put(Value.FIVE_THOUSAND, 0);
         value.put(Value.THOUSAND, 0);
         value.put(Value.FIFTY_HUNDRED, 0);
         value.put(Value.HUNDRED, 0);
     }
 
-    public ATM(ATMBuilder builder) {
-        value.put(Value.FIVE_THOUSAND, 0);
-        value.put(Value.THOUSAND, 0);
-        value.put(Value.FIFTY_HUNDRED, 0);
-        value.put(Value.HUNDRED, 0);
+    private ATM(ATMBuilder builder) {
+        this.value = new HashMap<>();
+        value.put(Value.FIVE_THOUSAND, builder.countFiveThousand);
+        value.put(Value.THOUSAND, builder.countThousand);
+        value.put(Value.FIFTY_HUNDRED, builder.FiftyHundred);
+        value.put(Value.HUNDRED, builder.hundred);
     }
 
-    public void putMoney(int bill) throws Exception {
-
+    public void putMoney(Value bill) throws Exception {
         if(!value.containsKey(bill)) throw new Exception("Пожалуйста вставьте купюру");
 
-        if(bill == Value.FIVE_THOUSAND.getValue()) {
+        if(bill == Value.FIVE_THOUSAND) {
             this.addBill(Value.FIVE_THOUSAND);
-        } else if(bill == Value.THOUSAND.getValue()) {
+        } else if(bill == Value.THOUSAND) {
             this.addBill(Value.THOUSAND);
-        } else if(bill == Value.FIFTY_HUNDRED.getValue()){
+        } else if(bill == Value.FIFTY_HUNDRED){
             this.addBill(Value.FIFTY_HUNDRED);
-        } else if(bill == Value.HUNDRED.getValue()) {
+        } else if(bill == Value.HUNDRED) {
             this.addBill(Value.HUNDRED);
         }
     }
 
     public int takeMoney(int amount) throws Exception {
-        int totalSum = this.processBilling(amount);
-        return totalSum;
+        return this.processBilling(amount);
     }
 
     public int getBalance() {
@@ -59,41 +59,45 @@ public class ATM {
     }
 
     private void decreaseBalance(int countBills, Value denomination) {
-        value.put(denomination, value.get(denomination.getValue()) - countBills);
+        value.put(denomination, value.get(denomination) - countBills);
     }
 
     private void addBill(Value bill) {
-        value.put(bill, value.get(bill.getValue()) + 1);
+        value.put(bill, value.get(bill) + 1);
     }
 
     private int processBilling(int amount) throws Exception {
         int totalBalance = this.getBalance();
+        int calculateAmount = amount;
         if(totalBalance < amount) throw new Exception("Запрашиваемая сумма превышает сумму денег в банкомате");
-        Operation countBills = new CountBills();
-        int countFiftyThousand = countBills.action(amount, Value.FIVE_THOUSAND.getValue(), Value.FIVE_THOUSAND);
-        int countThousandBills = countBills.action(amount, Value.THOUSAND.getValue(), Value.THOUSAND);
-        int countFiftyHundred = countBills.action(amount, Value.FIFTY_HUNDRED.getValue(), Value.FIFTY_HUNDRED);
-        int countHundred = countBills.action(amount, Value.HUNDRED.getValue(), Value.HUNDRED);
-        int availableAmount = this.countAvailableAmount(countFiftyThousand, countThousandBills, countFiftyHundred, countHundred);
 
-        if(availableAmount != amount) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
+        Operation countBills = new CountBills();
+
+        int countFiftyThousand = countBills.action(calculateAmount, Value.FIVE_THOUSAND.getValue(), Value.FIVE_THOUSAND);
+        calculateAmount -= (Value.FIVE_THOUSAND.getValue() * countFiftyThousand);
+
+        int countThousandBills = countBills.action(calculateAmount, Value.THOUSAND.getValue(), Value.THOUSAND);
+        calculateAmount -= (Value.THOUSAND.getValue() * countThousandBills);
+
+        int countFiftyHundred = countBills.action(calculateAmount, Value.FIFTY_HUNDRED.getValue(), Value.FIFTY_HUNDRED);
+        calculateAmount -= (Value.FIFTY_HUNDRED.getValue() * countFiftyHundred);
+
+        int countHundred = countBills.action(calculateAmount, Value.HUNDRED.getValue(), Value.HUNDRED);
+        calculateAmount -= (Value.HUNDRED.getValue() * countHundred);
+
+        if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 
         this.decreaseBalance(countFiftyThousand, Value.FIVE_THOUSAND);
         this.decreaseBalance(countThousandBills, Value.THOUSAND);
         this.decreaseBalance(countFiftyHundred, Value.FIFTY_HUNDRED);
         this.decreaseBalance(countHundred, Value.HUNDRED);
-        return availableAmount;
+        return amount;
     }
 
-    private void clearATM() {
-        this.decreaseBalance(ZERO_BILLS, Value.FIVE_THOUSAND);
-        this.decreaseBalance(ZERO_BILLS, Value.THOUSAND);
-        this.decreaseBalance(ZERO_BILLS, Value.FIFTY_HUNDRED);
-        this.decreaseBalance(ZERO_BILLS, Value.HUNDRED);
-    }
-
-    private int countAvailableAmount(int countFiftyThousand, int countThousandBills, int countFiftyHundred, int countHundred) {
-        return (countFiftyThousand * Value.FIVE_THOUSAND.getValue()) + (countThousandBills * Value.THOUSAND.getValue()) + (countFiftyHundred * Value.FIFTY_HUNDRED.getValue()) + (countHundred * Value.HUNDRED.getValue());
+    public void clearATM() {
+      for(Value val : Value.values()) {
+          this.decreaseBalance(value.get(val), val);
+      }
     }
 
     public static class ATMBuilder {
@@ -102,24 +106,23 @@ public class ATM {
         private int FiftyHundred;
         private int hundred;
 
-        ATMBuilder insertFiveThousand(int count) {
-            this.countFiveThousand = count;
-            return this;
-        }
+      public ATMBuilder(int countFiveThousand){
+           this.countFiveThousand = countFiveThousand;
+       }
 
-        ATMBuilder insertThousand(int count) {
+       public ATMBuilder insertThousand(int count) {
             this.countThousand = count;
             return this;
         }
 
-        ATMBuilder insertFiftyHundred(int count) {
+       public ATMBuilder insertFiftyHundred(int count) {
             this.FiftyHundred = count;
             return this;
         }
-        ATMBuilder insertHundred(int count) {
-            this.FiftyHundred = count;
+        public ATMBuilder insertHundred(int count) {
+            this.hundred = count;
             return this;
         }
-        ATMBuilder build() { return new ATMBuilder(); }
+       public ATM build() { return new ATM(this); }
     }
 }
