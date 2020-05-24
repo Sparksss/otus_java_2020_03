@@ -81,10 +81,4 @@ public class ATMTest {
         });
     }
 
-//    @Test
-//    public void testDivide() {
-//        assertThrows(ArithmeticException.class, () -> {
-//            Integer.divideUnsigned(42, 0);
-//        });
-//    }
 }
