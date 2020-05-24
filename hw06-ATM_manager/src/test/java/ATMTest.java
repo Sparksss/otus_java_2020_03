@@ -33,14 +33,14 @@ public class ATMTest {
 
     @Test
     public void shouldAddFiveThousand() throws Exception {
-        atm.putMoney(Value.FIVE_THOUSAND);
+        atm.putMoney(Value.FIVE_THOUSAND, 1);
 
         assertEquals(atm.getBalance(), 110000);
     }
 
     @Test
     public void shouldAddThousand() throws Exception {
-        atm.putMoney(Value.THOUSAND);
+        atm.putMoney(Value.THOUSAND, 1);
         assertEquals(atm.getBalance(), 106000);
     }
 

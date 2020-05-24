@@ -2,8 +2,11 @@ package ATM;
 
 import ATM.Operation.*;
 
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import ATM.Store.*;
 
 
 /**
@@ -12,38 +15,28 @@ import java.util.Map;
 
 public class ATM {
 
-    private Map<Value, Integer> value;
+    private Map<Value, Store> store = new HashMap<>();
 
     private int ZERO_BILLS = 0;
 
     public ATM() {
-        this.value = new HashMap<>();
-        value.put(Value.FIVE_THOUSAND, 0);
-        value.put(Value.THOUSAND, 0);
-        value.put(Value.FIFTY_HUNDRED, 0);
-        value.put(Value.HUNDRED, 0);
+
+        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(0));
+        store.put(Value.THOUSAND, new CellThousand(0));
+        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(0));
+        store.put(Value.HUNDRED, new CellHundred(0));
     }
 
     private ATM(ATMBuilder builder) {
-        this.value = new HashMap<>();
-        value.put(Value.FIVE_THOUSAND, builder.countFiveThousand);
-        value.put(Value.THOUSAND, builder.countThousand);
-        value.put(Value.FIFTY_HUNDRED, builder.FiftyHundred);
-        value.put(Value.HUNDRED, builder.hundred);
+        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(builder.countFiveThousand));
+        store.put(Value.THOUSAND, new CellThousand(builder.countThousand));
+        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(builder.FiftyHundred));
+        store.put(Value.HUNDRED, new CellHundred(builder.hundred));
     }
 
-    public void putMoney(Value bill) throws Exception {
-        if(!value.containsKey(bill)) throw new Exception("Пожалуйста вставьте купюру");
-
-        if(bill == Value.FIVE_THOUSAND) {
-            this.addBill(Value.FIVE_THOUSAND);
-        } else if(bill == Value.THOUSAND) {
-            this.addBill(Value.THOUSAND);
-        } else if(bill == Value.FIFTY_HUNDRED){
-            this.addBill(Value.FIFTY_HUNDRED);
-        } else if(bill == Value.HUNDRED) {
-            this.addBill(Value.HUNDRED);
-        }
+    public void putMoney(Value bill, int countBills) throws Exception {
+        if(countBills < 1) throw new Exception("Пожалуйста вставьте купюры в купюроприёмник");
+        store.get(bill).putBills(countBills);
     }
 
     public int takeMoney(int amount) throws Exception {
@@ -51,52 +44,62 @@ public class ATM {
     }
 
     public int getBalance() {
-        int totalBalance = 0;
-        for(Map.Entry<Value, Integer> pair : value.entrySet()){
-            totalBalance += (pair.getKey().getValue() * pair.getValue());
+        int sum = 0;
+        for(Value val : Value.values()) {
+            sum += store.get(val).getSumCountBills();
         }
-        return totalBalance;
+        return sum;
     }
 
-    private void decreaseBalance(int countBills, Value denomination) {
-        value.put(denomination, value.get(denomination) - countBills);
-    }
+    private void decreaseBalance(Value denomination, int countBills) throws Exception {
 
-    private void addBill(Value bill) {
-        value.put(bill, value.get(bill) + 1);
+        Store bill = store.get(denomination);
+        if( !(bill.getCountBills() >= countBills)) throw new Exception("Невозможно выдать данную сумму");
+
+            store.get(denomination).takeBills(countBills);
     }
 
     private int processBilling(int amount) throws Exception {
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
+        int availableCountBills = 0;
         if(totalBalance < amount) throw new Exception("К сожалению не возможно выдать данную сумму");
 
         Operation countBills = new CountBills();
+        Map<Value, Integer> availableStoreBills = new HashMap<>();
 
-        int countFiftyThousand = countBills.action(calculateAmount, Value.FIVE_THOUSAND.getValue(), Value.FIVE_THOUSAND);
-        calculateAmount -= (Value.FIVE_THOUSAND.getValue() * countFiftyThousand);
+        Store cell = store.get(Value.FIVE_THOUSAND);
+        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.FIVE_THOUSAND);
+        availableStoreBills.put(Value.FIVE_THOUSAND, availableCountBills);
+        calculateAmount -= (Value.FIVE_THOUSAND.getValue() * availableCountBills);
 
-        int countThousandBills = countBills.action(calculateAmount, Value.THOUSAND.getValue(), Value.THOUSAND);
-        calculateAmount -= (Value.THOUSAND.getValue() * countThousandBills);
+        cell = store.get(Value.THOUSAND);
+        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.THOUSAND);
+        availableStoreBills.put(Value.THOUSAND, availableCountBills);
+        calculateAmount -= (Value.THOUSAND.getValue() * availableCountBills);
 
-        int countFiftyHundred = countBills.action(calculateAmount, Value.FIFTY_HUNDRED.getValue(), Value.FIFTY_HUNDRED);
-        calculateAmount -= (Value.FIFTY_HUNDRED.getValue() * countFiftyHundred);
+        cell = store.get(Value.FIFTY_HUNDRED);
+        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.FIFTY_HUNDRED);
+        availableStoreBills.put(Value.FIFTY_HUNDRED, availableCountBills);
+        calculateAmount -= (Value.FIFTY_HUNDRED.getValue() * availableCountBills);
 
-        int countHundred = countBills.action(calculateAmount, Value.HUNDRED.getValue(), Value.HUNDRED);
-        calculateAmount -= (Value.HUNDRED.getValue() * countHundred);
+        cell = store.get(Value.HUNDRED);
+        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.HUNDRED);
+        availableStoreBills.put(Value.HUNDRED, availableCountBills);
+        calculateAmount -= (Value.HUNDRED.getValue() * availableCountBills);
 
         if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 
-        this.decreaseBalance(countFiftyThousand, Value.FIVE_THOUSAND);
-        this.decreaseBalance(countThousandBills, Value.THOUSAND);
-        this.decreaseBalance(countFiftyHundred, Value.FIFTY_HUNDRED);
-        this.decreaseBalance(countHundred, Value.HUNDRED);
+        for(Value val : Value.values()) {
+            store.get(val).takeBills(availableStoreBills.get(val));
+        }
         return amount;
     }
 
     public void clearATM() {
       for(Value val : Value.values()) {
-          this.decreaseBalance(value.get(val), val);
+          Store bill = store.get(val);
+          bill.takeBills(bill.getCountBills());
       }
     }
 
