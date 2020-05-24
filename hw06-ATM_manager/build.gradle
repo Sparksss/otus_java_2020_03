@@ -6,17 +6,22 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_13
 targetCompatibility = JavaVersion.VERSION_13
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 shadowJar {
-    archiveBaseName.set('ATMHW05')
+    archiveBaseName.set('ATMHW06')
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'ru.otus.ATM'
+        attributes 'Main-Class': 'ru.otus.Main'
     }
 }
 

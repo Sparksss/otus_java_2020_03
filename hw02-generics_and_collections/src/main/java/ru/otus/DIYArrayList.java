@@ -79,7 +79,7 @@ public class DIYArrayList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        if((this.size + 1) >= this.elements.length) this.grow();
+        if(this.size == this.elements.length) this.grow();
         this.elements[this.size] = e;
         this.size++;
         return true;
