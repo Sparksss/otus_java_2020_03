@@ -69,7 +69,7 @@ public class ATM {
     private int processBilling(int amount) throws Exception {
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
-        if(totalBalance < amount) throw new Exception("Запрашиваемая сумма превышает сумму денег в банкомате");
+        if(totalBalance < amount) throw new Exception("К сожалению не возможно выдать данную сумму");
 
         Operation countBills = new CountBills();
 
