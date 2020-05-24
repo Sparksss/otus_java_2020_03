@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
 import ATM.ATM;
-import ATM.Operation.Value;
+import ATM.Store.Value;
 
 import static org.junit.jupiter.api.Assertions.*;
 

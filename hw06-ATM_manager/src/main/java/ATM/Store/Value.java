@@ -1,4 +1,4 @@
-package ATM.Operation;
+package ATM.Store;
 
 /**
  * Created by Ilya Rogatkin, May 2020

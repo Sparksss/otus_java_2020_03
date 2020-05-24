@@ -4,6 +4,8 @@
 
 package ATM.Operation;
 
+import ATM.Store.Value;
+
 public class CountBills implements Operation {
     @Override
     public int action(int needSum, int countBills, Value denomination) {

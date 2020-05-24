@@ -52,7 +52,7 @@ public class ATM {
     private int processBilling(int amount) throws Exception {
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
-        int availableCountBills = 0;
+        int availableCountBills;
         if(totalBalance < amount) throw new Exception("К сожалению не возможно выдать данную сумму");
 
         Operation countBills = new CountBills();
@@ -64,7 +64,6 @@ public class ATM {
             availableStoreBills.put(key, availableCountBills);
             calculateAmount -= (key.getValue() * availableCountBills);
         }
-
 
         if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 

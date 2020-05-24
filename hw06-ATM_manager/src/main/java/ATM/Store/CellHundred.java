@@ -4,8 +4,6 @@
 
 package ATM.Store;
 
-import ATM.Operation.Value;
-
 public class CellHundred implements Store {
     private int count;
     private Value hundred;
@@ -34,5 +32,10 @@ public class CellHundred implements Store {
     @Override
     public int getSumCountBills() {
         return hundred.getValue() * count;
+    }
+
+    @Override
+    public Value getDenomination() {
+        return hundred;
     }
 }

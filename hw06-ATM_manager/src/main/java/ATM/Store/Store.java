@@ -10,4 +10,5 @@ public interface Store {
     void putBills(int count);
     int getCountBills();
     int getSumCountBills();
+    Value getDenomination();
 }
