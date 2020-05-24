@@ -2,10 +2,8 @@ package ATM;
 
 import ATM.Operation.*;
 
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 import ATM.Store.*;
 
 
@@ -15,7 +13,7 @@ import ATM.Store.*;
 
 public class ATM {
 
-    private Map<Value, Store> store = new HashMap<>();
+    private TreeMap<Value, Store> store = new TreeMap<>();
 
     private int ZERO_BILLS = 0;
 
@@ -51,14 +49,6 @@ public class ATM {
         return sum;
     }
 
-    private void decreaseBalance(Value denomination, int countBills) throws Exception {
-
-        Store bill = store.get(denomination);
-        if( !(bill.getCountBills() >= countBills)) throw new Exception("Невозможно выдать данную сумму");
-
-            store.get(denomination).takeBills(countBills);
-    }
-
     private int processBilling(int amount) throws Exception {
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
@@ -68,25 +58,13 @@ public class ATM {
         Operation countBills = new CountBills();
         Map<Value, Integer> availableStoreBills = new HashMap<>();
 
-        Store cell = store.get(Value.FIVE_THOUSAND);
-        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.FIVE_THOUSAND);
-        availableStoreBills.put(Value.FIVE_THOUSAND, availableCountBills);
-        calculateAmount -= (Value.FIVE_THOUSAND.getValue() * availableCountBills);
+        for(Value key : store.descendingKeySet()) {
+            Store cell = store.get(key);
+            availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), key);
+            availableStoreBills.put(key, availableCountBills);
+            calculateAmount -= (key.getValue() * availableCountBills);
+        }
 
-        cell = store.get(Value.THOUSAND);
-        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.THOUSAND);
-        availableStoreBills.put(Value.THOUSAND, availableCountBills);
-        calculateAmount -= (Value.THOUSAND.getValue() * availableCountBills);
-
-        cell = store.get(Value.FIFTY_HUNDRED);
-        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.FIFTY_HUNDRED);
-        availableStoreBills.put(Value.FIFTY_HUNDRED, availableCountBills);
-        calculateAmount -= (Value.FIFTY_HUNDRED.getValue() * availableCountBills);
-
-        cell = store.get(Value.HUNDRED);
-        availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), Value.HUNDRED);
-        availableStoreBills.put(Value.HUNDRED, availableCountBills);
-        calculateAmount -= (Value.HUNDRED.getValue() * availableCountBills);
 
         if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 
