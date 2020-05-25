@@ -72,7 +72,7 @@ public class ATM {
         return amount;
     }
 
-    public void clearATM() {
+    public void clearATM() throws Exception {
       for(Value val : Value.values()) {
           Store bill = store.get(val);
           bill.takeBills(bill.getCountBills());
