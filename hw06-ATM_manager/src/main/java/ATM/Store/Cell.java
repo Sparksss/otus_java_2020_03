@@ -8,8 +8,10 @@ public class Cell implements Store {
 
     private int count;
     private Value denomination;
+    private final int ZERO_BILL = 0;
 
-    public Cell(int count, Value denomination) {
+    public Cell(int count, Value denomination) throws Exception {
+        if(count < ZERO_BILL) throw new Exception("Не может быть отрицательного количества купюр");
         this.count = count;
         this.denomination = denomination;
     }

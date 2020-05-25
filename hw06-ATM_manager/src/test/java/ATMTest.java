@@ -17,12 +17,8 @@ public class ATMTest {
     ATM atm;
 
     @BeforeEach
-    public void setUp() {
-        atm = new ATM.ATMBuilder(10)
-                .insertThousand(20)
-                .insertFiftyHundred(50)
-                .insertHundred(100)
-                .build();
+    public void setUp() throws Exception {
+        atm = new ATM(10, 20, 50, 100);
     }
 
     @DisplayName("Check initial sum in ATM")
@@ -45,7 +41,7 @@ public class ATMTest {
     }
 
     @Test
-    public void shouldNullifyBillsCount() {
+    public void shouldNullifyBillsCount() throws Exception {
         atm.clearATM();
         assertEquals(atm.getBalance(), 0);
     }

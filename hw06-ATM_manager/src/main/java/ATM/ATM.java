@@ -17,18 +17,11 @@ public class ATM {
 
     private int ZERO_BILLS = 0;
 
-    public ATM() {
-        store.put(Value.FIVE_THOUSAND, new Cell(0, Value.FIVE_THOUSAND));
-        store.put(Value.THOUSAND, new Cell(0, Value.THOUSAND));
-        store.put(Value.FIFTY_HUNDRED, new Cell(0, Value.FIFTY_HUNDRED));
-        store.put(Value.HUNDRED, new Cell(0, Value.HUNDRED));
-    }
-
-    private ATM(ATMBuilder builder) {
-        store.put(Value.FIVE_THOUSAND, new Cell(builder.countFiveThousand, Value.FIVE_THOUSAND));
-        store.put(Value.THOUSAND, new Cell(builder.countThousand, Value.THOUSAND));
-        store.put(Value.FIFTY_HUNDRED, new Cell(builder.FiftyHundred, Value.FIFTY_HUNDRED));
-        store.put(Value.HUNDRED, new Cell(builder.hundred, Value.HUNDRED));
+    public ATM(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
+        store.put(Value.FIVE_THOUSAND, new Cell(countFiveThousand, Value.FIVE_THOUSAND));
+        store.put(Value.THOUSAND, new Cell(countThousand, Value.THOUSAND));
+        store.put(Value.FIFTY_HUNDRED, new Cell(countFiftyHundred, Value.FIFTY_HUNDRED));
+        store.put(Value.HUNDRED, new Cell(countHundred, Value.HUNDRED));
     }
 
     public void putMoney(Value bill, int countBills) throws Exception {
@@ -77,31 +70,5 @@ public class ATM {
           Store bill = store.get(val);
           bill.takeBills(bill.getCountBills());
       }
-    }
-
-    public static class ATMBuilder {
-        private int countFiveThousand;
-        private int countThousand;
-        private int FiftyHundred;
-        private int hundred;
-
-      public ATMBuilder(int countFiveThousand){
-           this.countFiveThousand = countFiveThousand;
-       }
-
-       public ATMBuilder insertThousand(int count) {
-            this.countThousand = count;
-            return this;
-        }
-
-       public ATMBuilder insertFiftyHundred(int count) {
-            this.FiftyHundred = count;
-            return this;
-        }
-        public ATMBuilder insertHundred(int count) {
-            this.hundred = count;
-            return this;
-        }
-       public ATM build() { return new ATM(this); }
     }
 }
