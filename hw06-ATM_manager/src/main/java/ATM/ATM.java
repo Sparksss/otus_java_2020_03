@@ -18,18 +18,17 @@ public class ATM {
     private int ZERO_BILLS = 0;
 
     public ATM() {
-
-        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(0));
-        store.put(Value.THOUSAND, new CellThousand(0));
-        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(0));
-        store.put(Value.HUNDRED, new CellHundred(0));
+        store.put(Value.FIVE_THOUSAND, new Cell(0, Value.FIVE_THOUSAND));
+        store.put(Value.THOUSAND, new Cell(0, Value.THOUSAND));
+        store.put(Value.FIFTY_HUNDRED, new Cell(0, Value.FIFTY_HUNDRED));
+        store.put(Value.HUNDRED, new Cell(0, Value.HUNDRED));
     }
 
     private ATM(ATMBuilder builder) {
-        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(builder.countFiveThousand));
-        store.put(Value.THOUSAND, new CellThousand(builder.countThousand));
-        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(builder.FiftyHundred));
-        store.put(Value.HUNDRED, new CellHundred(builder.hundred));
+        store.put(Value.FIVE_THOUSAND, new Cell(builder.countFiveThousand, Value.FIVE_THOUSAND));
+        store.put(Value.THOUSAND, new Cell(builder.countThousand, Value.THOUSAND));
+        store.put(Value.FIFTY_HUNDRED, new Cell(builder.FiftyHundred, Value.FIFTY_HUNDRED));
+        store.put(Value.HUNDRED, new Cell(builder.hundred, Value.HUNDRED));
     }
 
     public void putMoney(Value bill, int countBills) throws Exception {

@@ -4,18 +4,19 @@
 
 package ATM.Store;
 
-public class CellThousand implements Store {
+public class Cell implements Store {
 
     private int count;
-    private Value thousand;
+    private Value denomination;
 
-    public CellThousand(int count) {
+    public Cell(int count, Value denomination) {
         this.count = count;
-        this.thousand = Value.THOUSAND;
+        this.denomination = denomination;
     }
 
     @Override
-    public int takeBills(int count) {
+    public int takeBills(int count) throws Exception {
+        if(count > this.count) throw new Exception("Невозможно снять данную сумму");
         this.count -= count;
         return count;
     }
@@ -27,16 +28,16 @@ public class CellThousand implements Store {
 
     @Override
     public int getCountBills() {
-        return this .count;
+        return this.count;
     }
 
     @Override
     public int getSumCountBills() {
-        return thousand.getValue() * count;
+        return denomination.getValue() * count;
     }
 
     @Override
     public Value getDenomination() {
-        return thousand;
+        return denomination;
     }
 }
