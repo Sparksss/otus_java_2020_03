@@ -84,4 +84,12 @@ public class ATMTest {
         });
     }
 
+    @Test
+    public void shouldThrowExceptionIncorrectCountOfBills() {
+        int countBills = 0;
+        assertThrows(Exception.class, () -> {
+            atm.putMoney(Value.FIFTY_HUNDRED, countBills);
+        });
+    }
+
 }
