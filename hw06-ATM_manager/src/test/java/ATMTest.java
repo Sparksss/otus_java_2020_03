@@ -76,4 +76,12 @@ public class ATMTest {
         });
     }
 
+    @Test
+    public void shouldThrowExceptionSumLessMinimum() {
+        int amount = 50;
+        assertThrows(Exception.class, () -> {
+            atm.takeMoney(amount);
+        });
+    }
+
 }

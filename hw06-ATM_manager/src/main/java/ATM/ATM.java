@@ -13,7 +13,7 @@ import ATM.Store.*;
 
 public class ATM {
 
-    private int ZERO_BILLS = 0;
+    private int MIN_AMOUNT = 100;
     private Box storage;
 
     public ATM(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
@@ -40,6 +40,7 @@ public class ATM {
     }
 
     private int processBilling(int amount) throws Exception {
+        if(amount < MIN_AMOUNT) throw new Exception("Минимальная сумма должна быть не менее 100");
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
         int availableCountBills;
