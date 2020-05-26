@@ -28,7 +28,7 @@ public class Storage {
         return cells.get(bill);
     }
 
-    public TreeMap<Value, StoreMoney> getCells() {
+    public TreeMap<Value, StoreMoney> getListCells() {
         return cells;
     }
 
