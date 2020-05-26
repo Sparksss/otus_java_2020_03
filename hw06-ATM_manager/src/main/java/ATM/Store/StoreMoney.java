@@ -5,7 +5,7 @@
 package ATM.Store;
 
 
-public interface Store {
+public interface StoreMoney {
     int takeBills(int count) throws Exception;
     void putBills(int count);
     int getCountBills();

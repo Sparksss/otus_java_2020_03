@@ -13,20 +13,17 @@ import ATM.Store.*;
 
 public class ATM {
 
-    private TreeMap<Value, Store> store = new TreeMap<>();
-
     private int ZERO_BILLS = 0;
+    private Storage storage;
 
     public ATM(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
-        store.put(Value.FIVE_THOUSAND, new Cell(countFiveThousand, Value.FIVE_THOUSAND));
-        store.put(Value.THOUSAND, new Cell(countThousand, Value.THOUSAND));
-        store.put(Value.FIFTY_HUNDRED, new Cell(countFiftyHundred, Value.FIFTY_HUNDRED));
-        store.put(Value.HUNDRED, new Cell(countHundred, Value.HUNDRED));
+        storage = new Storage(countFiveThousand, countThousand, countFiftyHundred, countHundred);
     }
 
     public void putMoney(Value bill, int countBills) throws Exception {
         if(countBills < 1) throw new Exception("Пожалуйста вставьте купюры в купюроприёмник");
-        store.get(bill).putBills(countBills);
+        StoreMoney cell = storage.openCellByBill(bill);
+        cell.putBills(countBills);
     }
 
     public int takeMoney(int amount) throws Exception {
@@ -36,7 +33,8 @@ public class ATM {
     public int getBalance() {
         int sum = 0;
         for(Value val : Value.values()) {
-            sum += store.get(val).getSumCountBills();
+            StoreMoney cell = storage.openCellByBill(val);
+            sum += cell.getSumCountBills();
         }
         return sum;
     }
@@ -50,8 +48,8 @@ public class ATM {
         Operation countBills = new CountBills();
         Map<Value, Integer> availableStoreBills = new HashMap<>();
 
-        for(Value key : store.descendingKeySet()) {
-            Store cell = store.get(key);
+        for(Value key : storage.getCells().descendingKeySet()) {
+            StoreMoney cell = storage.openCellByBill(key);
             availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), key);
             availableStoreBills.put(key, availableCountBills);
             calculateAmount -= (key.getValue() * availableCountBills);
@@ -60,15 +58,13 @@ public class ATM {
         if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 
         for(Value val : Value.values()) {
-            store.get(val).takeBills(availableStoreBills.get(val));
+            StoreMoney cell = storage.openCellByBill(val);
+            cell.takeBills(availableStoreBills.get(val));
         }
         return amount;
     }
 
-    public void clearATM() throws Exception {
-      for(Value val : Value.values()) {
-          Store bill = store.get(val);
-          bill.takeBills(bill.getCountBills());
-      }
+    public void emptyStorage() throws Exception {
+        storage = new Storage();
     }
 }

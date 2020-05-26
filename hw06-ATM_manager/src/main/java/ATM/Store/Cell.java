@@ -4,13 +4,13 @@
 
 package ATM.Store;
 
-public class Cell implements Store {
+public class Cell implements StoreMoney {
 
     private int count;
     private Value denomination;
     private final int ZERO_BILL = 0;
 
-    public Cell(int count, Value denomination) throws Exception {
+    public Cell(Value denomination, int count) throws Exception {
         if(count < ZERO_BILL) throw new Exception("Не может быть отрицательного количества купюр");
         this.count = count;
         this.denomination = denomination;

@@ -30,7 +30,6 @@ public class ATMTest {
     @Test
     public void shouldAddFiveThousand() throws Exception {
         atm.putMoney(Value.FIVE_THOUSAND, 1);
-
         assertEquals(atm.getBalance(), 110000);
     }
 
@@ -42,7 +41,7 @@ public class ATMTest {
 
     @Test
     public void shouldNullifyBillsCount() throws Exception {
-        atm.clearATM();
+        atm.emptyStorage();
         assertEquals(atm.getBalance(), 0);
     }
 
