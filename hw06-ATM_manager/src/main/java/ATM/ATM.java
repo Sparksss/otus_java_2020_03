@@ -14,7 +14,7 @@ import ATM.Store.*;
 public class ATM {
 
     private int ZERO_BILLS = 0;
-    private Storage storage;
+    private Box storage;
 
     public ATM(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
         storage = new Storage(countFiveThousand, countThousand, countFiftyHundred, countHundred);
@@ -48,7 +48,7 @@ public class ATM {
         Operation countBills = new CountBills();
         Map<Value, Integer> availableStoreBills = new HashMap<>();
 
-        for(Value key : storage.getCells().descendingKeySet()) {
+        for(Value key : storage.getListCells().descendingKeySet()) {
             StoreMoney cell = storage.openCellByBill(key);
             availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), key);
             availableStoreBills.put(key, availableCountBills);
