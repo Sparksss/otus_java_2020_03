@@ -6,7 +6,7 @@ package ATM.Store;
 
 import java.util.TreeMap;
 
-public class Storage {
+public class Storage implements Box {
     private TreeMap<Value, StoreMoney> cells = new TreeMap<>();
 
     private final int ZERO_BILL = 0;
