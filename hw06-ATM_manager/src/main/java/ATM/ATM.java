@@ -13,28 +13,17 @@ import ATM.Store.*;
 
 public class ATM {
 
-    private TreeMap<Value, Store> store = new TreeMap<>();
+    private int MIN_AMOUNT = 100;
+    private Box storage;
 
-    private int ZERO_BILLS = 0;
-
-    public ATM() {
-
-        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(0));
-        store.put(Value.THOUSAND, new CellThousand(0));
-        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(0));
-        store.put(Value.HUNDRED, new CellHundred(0));
-    }
-
-    private ATM(ATMBuilder builder) {
-        store.put(Value.FIVE_THOUSAND, new CellFiveThousand(builder.countFiveThousand));
-        store.put(Value.THOUSAND, new CellThousand(builder.countThousand));
-        store.put(Value.FIFTY_HUNDRED, new CellFiftyHundred(builder.FiftyHundred));
-        store.put(Value.HUNDRED, new CellHundred(builder.hundred));
+    public ATM(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
+        storage = new Storage(countFiveThousand, countThousand, countFiftyHundred, countHundred);
     }
 
     public void putMoney(Value bill, int countBills) throws Exception {
         if(countBills < 1) throw new Exception("Пожалуйста вставьте купюры в купюроприёмник");
-        store.get(bill).putBills(countBills);
+        StoreMoney cell = storage.openCellByBill(bill);
+        cell.putBills(countBills);
     }
 
     public int takeMoney(int amount) throws Exception {
@@ -44,12 +33,14 @@ public class ATM {
     public int getBalance() {
         int sum = 0;
         for(Value val : Value.values()) {
-            sum += store.get(val).getSumCountBills();
+            StoreMoney cell = storage.openCellByBill(val);
+            sum += cell.getSumCountBills();
         }
         return sum;
     }
 
     private int processBilling(int amount) throws Exception {
+        if(amount < MIN_AMOUNT) throw new Exception("Минимальная сумма должна быть не менее 100");
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
         int availableCountBills;
@@ -58,8 +49,8 @@ public class ATM {
         Operation countBills = new CountBills();
         Map<Value, Integer> availableStoreBills = new HashMap<>();
 
-        for(Value key : store.descendingKeySet()) {
-            Store cell = store.get(key);
+        for(Value key : storage.getListCells().descendingKeySet()) {
+            StoreMoney cell = storage.openCellByBill(key);
             availableCountBills = countBills.action(calculateAmount, cell.getCountBills(), key);
             availableStoreBills.put(key, availableCountBills);
             calculateAmount -= (key.getValue() * availableCountBills);
@@ -68,41 +59,13 @@ public class ATM {
         if(calculateAmount > 0) throw new Exception("Банкомат не может выдать запрошенную ,Вами, сумму");
 
         for(Value val : Value.values()) {
-            store.get(val).takeBills(availableStoreBills.get(val));
+            StoreMoney cell = storage.openCellByBill(val);
+            cell.takeBills(availableStoreBills.get(val));
         }
         return amount;
     }
 
-    public void clearATM() {
-      for(Value val : Value.values()) {
-          Store bill = store.get(val);
-          bill.takeBills(bill.getCountBills());
-      }
-    }
-
-    public static class ATMBuilder {
-        private int countFiveThousand;
-        private int countThousand;
-        private int FiftyHundred;
-        private int hundred;
-
-      public ATMBuilder(int countFiveThousand){
-           this.countFiveThousand = countFiveThousand;
-       }
-
-       public ATMBuilder insertThousand(int count) {
-            this.countThousand = count;
-            return this;
-        }
-
-       public ATMBuilder insertFiftyHundred(int count) {
-            this.FiftyHundred = count;
-            return this;
-        }
-        public ATMBuilder insertHundred(int count) {
-            this.hundred = count;
-            return this;
-        }
-       public ATM build() { return new ATM(this); }
+    public void emptyStorage() throws Exception {
+        storage = new Storage();
     }
 }

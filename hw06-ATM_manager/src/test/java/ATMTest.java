@@ -17,12 +17,8 @@ public class ATMTest {
     ATM atm;
 
     @BeforeEach
-    public void setUp() {
-        atm = new ATM.ATMBuilder(10)
-                .insertThousand(20)
-                .insertFiftyHundred(50)
-                .insertHundred(100)
-                .build();
+    public void setUp() throws Exception {
+        atm = new ATM(10, 20, 50, 100);
     }
 
     @DisplayName("Check initial sum in ATM")
@@ -34,7 +30,6 @@ public class ATMTest {
     @Test
     public void shouldAddFiveThousand() throws Exception {
         atm.putMoney(Value.FIVE_THOUSAND, 1);
-
         assertEquals(atm.getBalance(), 110000);
     }
 
@@ -45,8 +40,8 @@ public class ATMTest {
     }
 
     @Test
-    public void shouldNullifyBillsCount() {
-        atm.clearATM();
+    public void shouldNullifyBillsCount() throws Exception {
+        atm.emptyStorage();
         assertEquals(atm.getBalance(), 0);
     }
 
@@ -78,6 +73,22 @@ public class ATMTest {
         int amount = 10652;
         assertThrows(Exception.class, () -> {
             atm.takeMoney(amount);
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionSumLessMinimum() {
+        int amount = 50;
+        assertThrows(Exception.class, () -> {
+            atm.takeMoney(amount);
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionIncorrectCountOfBills() {
+        int countBills = 0;
+        assertThrows(Exception.class, () -> {
+            atm.putMoney(Value.FIFTY_HUNDRED, countBills);
         });
     }
 
