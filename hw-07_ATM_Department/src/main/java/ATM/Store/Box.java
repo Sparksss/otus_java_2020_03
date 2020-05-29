@@ -7,6 +7,8 @@ package ATM.Store;
 import java.util.TreeMap;
 
 public interface Box {
-    StoreMoney openCellByBill(Value bill);
     TreeMap<Value, StoreMoney> getListCells();
+    void loadBillsInStorage(Value bill, int countBills) throws Exception;
+    int getCountBillsByDenomination(Value bill);
+    int getAmountSumByDenomination(Value bill);
 }

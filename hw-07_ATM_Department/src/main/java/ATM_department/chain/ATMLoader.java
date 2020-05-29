@@ -4,16 +4,14 @@
 
 package ATM_department.chain;
 
-import ATM.ATMCityBank;
-
-public class ATMInitializer extends ATMProcessor {
+public class ATMLoader extends ATMProcessor {
     @Override
     protected void processInternal(ATMDepartment department) {
-        department.addATMtoDepartment(new ATMCityBank());
+        department.loadCashInATM();
     }
 
     @Override
     public String getProcessorName() {
-        return "Инициализация банкомата";
+        return "Загрузка купюр";
     }
 }

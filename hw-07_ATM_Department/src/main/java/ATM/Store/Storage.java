@@ -11,21 +11,22 @@ public class Storage implements Box {
 
     private final int ZERO_BILL = 0;
 
-    public Storage(int countFiveThousand, int countThousand, int countFiftyHundred, int countHundred) throws Exception {
-        cells.put(Value.FIVE_THOUSAND, new Cell(Value.FIVE_THOUSAND, countFiveThousand));
-        cells.put(Value.THOUSAND, new Cell(Value.THOUSAND, countThousand));
-        cells.put(Value.FIFTY_HUNDRED, new Cell(Value.FIFTY_HUNDRED, countFiftyHundred));
-        cells.put(Value.HUNDRED, new Cell(Value.HUNDRED, countHundred));
-    }
-
     public Storage() throws Exception {
         for(Value val : Value.values()) {
             cells.put(val, new Cell(val, ZERO_BILL));
         }
     }
 
-    public StoreMoney openCellByBill(Value bill) {
-        return cells.get(bill);
+    public void loadBillsInStorage(Value bill, int countBills) throws Exception {
+        cells.get(bill).putBills(countBills);
+    }
+
+    public int getCountBillsByDenomination(Value bill) {
+        return cells.get(bill).getCountBills();
+    }
+
+    public int getAmountSumByDenomination(Value bill) {
+        return cells.get(bill).getSumCountBills();
     }
 
     public TreeMap<Value, StoreMoney> getListCells() {
