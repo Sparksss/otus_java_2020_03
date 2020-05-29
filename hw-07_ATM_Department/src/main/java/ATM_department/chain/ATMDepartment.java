@@ -33,4 +33,12 @@ public class ATMDepartment {
             if(atm.getBalance() == 0) throw new Exception("Купюры не загружены в банкомат");
         }
     }
+
+    public int collectAmountOfBalancesATM() {
+        int sum = 0;
+        for(ATM atm : atms) {
+            sum += atm.getBalance();
+        }
+        return sum;
+    }
 }

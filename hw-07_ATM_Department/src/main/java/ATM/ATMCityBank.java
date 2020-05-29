@@ -73,6 +73,7 @@ public class ATMCityBank implements ATM {
             } else {
                 storage.loadBillsInStorage(val, ZERO_BILL);
             }
+            i++;
         }
     }
 

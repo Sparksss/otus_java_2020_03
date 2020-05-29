@@ -17,7 +17,7 @@ public class Storage implements Box {
         }
     }
 
-    public void loadBillsInStorage(Value bill, int countBills) throws Exception {
+    public void loadBillsInStorage(Value bill, int countBills) {
         cells.get(bill).putBills(countBills);
     }
 
