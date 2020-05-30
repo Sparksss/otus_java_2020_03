@@ -9,7 +9,7 @@ import ATM_department.chain.ATMDepartment;
 public class Collector implements Command {
     private ATMDepartment department;
 
-    Collector(ATMDepartment department) {
+    public Collector(ATMDepartment department) {
         this.department = department;
     }
 
@@ -17,6 +17,5 @@ public class Collector implements Command {
     @Override
     public void execute() {
         int sumOfDepartment = department.collectAmountOfBalancesATM();
-
     }
 }

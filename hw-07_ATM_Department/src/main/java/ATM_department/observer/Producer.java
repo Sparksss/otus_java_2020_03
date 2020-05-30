@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Producer {
-    private final List<Command> listners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
-    void addListener(Command command) {
-        listners.add(command);
+    public void addListener(Listener listener) {
+        listeners.add(listener);
     }
 
-    void removeListener(Command command) {
-        listners.remove(command);
+    public void removeListener(Listener listener) {
+        listeners.remove(listener);
     }
 
-    void event () {
-        for(Command command : listners) {
-            command.execute();
+    public void run (Command command) {
+        for(Listener listener : listeners) {
+            listener.onUpdate(command);
         }
     }
 }

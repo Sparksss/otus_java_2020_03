@@ -4,6 +4,8 @@
 
 package ATM_department.observer;
 
+import ATM_department.Command.Command;
+
 public interface Listener {
-    void onUpdate(String data);
+    void onUpdate(Command command);
 }
