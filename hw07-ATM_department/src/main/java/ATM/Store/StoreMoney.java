@@ -11,4 +11,5 @@ public interface StoreMoney {
     int getCountBills();
     int getSumCountBills();
     Value getDenomination();
+    StoreMoney copy();
 }

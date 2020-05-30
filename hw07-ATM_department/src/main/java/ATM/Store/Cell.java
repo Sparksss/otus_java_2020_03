@@ -16,9 +16,13 @@ public class Cell implements StoreMoney {
         this.denomination = denomination;
     }
 
-    public Cell(StoreMoney cell) {
-        this.denomination = cell.getDenomination();
-        this.count = cell.getCountBills();
+    public Cell copy() {
+        try {
+            return new Cell(this.getDenomination(), this.getCountBills());
+        } catch (Exception err) {
+            System.out.println(err.getMessage());
+        }
+        return null;
     }
 
     @Override

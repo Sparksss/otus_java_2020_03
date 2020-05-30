@@ -16,6 +16,6 @@ public class ATMChecker extends ATMProcessor {
 
     @Override
     public String getProcessorName() {
-        return null;
+        return "Проверка данных и загруженных купюр";
     }
 }

@@ -11,7 +11,7 @@ import ATM_department.observer.Producer;
  * Created by Ilya Rogatkin, May 2020
  */
 
-public class Main {
+public class MainDepartment {
     public static void main(String[] args) {
         ATMDepartment department = new ATMDepartment();
         Originator originator = new Originator();

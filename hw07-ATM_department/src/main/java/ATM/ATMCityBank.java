@@ -31,7 +31,7 @@ public class ATMCityBank implements ATM {
         TreeMap<Value, StoreMoney> cells = storage.getListCells();
         TreeMap<Value, StoreMoney> copyCells = new TreeMap<>();
         for(Map.Entry<Value, StoreMoney> entry : cells.entrySet()) {
-            StoreMoney cell = new Cell(entry.getValue());
+            StoreMoney cell = entry.getValue().copy();
             copyCells.put(entry.getKey(), cell);
         }
     }

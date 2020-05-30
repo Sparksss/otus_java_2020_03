@@ -21,7 +21,7 @@ shadowJar {
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'ru.otus.Main'
+        attributes 'Main-Class': 'ru.otus.MainDepartment'
     }
 }
 
