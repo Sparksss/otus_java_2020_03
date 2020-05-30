@@ -8,8 +8,14 @@ import ATM_department.Command.Command;
 
 public class Consumer implements Listener {
 
+    private Command command;
+
+    public Consumer(Command command){
+        this.command = command;
+    }
+
     @Override
-    public void onUpdate(Command command) {
+    public void onUpdate() {
         command.execute();
     }
 }

@@ -5,15 +5,28 @@
 package ATM_department.chain;
 
 import ATM.ATM;
-import ATM.ATMCityBank;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ATMDepartment {
-    private final List<ATMCityBank> atms = new ArrayList<>();
+    private List<ATM> atms = new ArrayList<>();
 
-    void addATMtoDepartment(ATMCityBank atm) {
+    public ATMDepartment copy() {
+        List<ATM> copyATM = new ArrayList<>();
+        for(ATM atm : atms) {
+            copyATM.add(atm.copy());
+        }
+        return new ATMDepartment(copyATM);
+    }
+
+    public ATMDepartment() {}
+
+    ATMDepartment(List<ATM> atms) {
+        this.atms = atms;
+    }
+
+    void addATMtoDepartment(ATM atm) {
         atms.add(atm);
     }
 

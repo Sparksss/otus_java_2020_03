@@ -16,6 +16,11 @@ public class Cell implements StoreMoney {
         this.denomination = denomination;
     }
 
+    public Cell(StoreMoney cell) {
+        this.denomination = cell.getDenomination();
+        this.count = cell.getCountBills();
+    }
+
     @Override
     public int takeBills(int count) throws Exception {
         if(count > this.count) throw new Exception("Невозможно снять данную сумму");

@@ -20,9 +20,9 @@ public class Producer {
         listeners.remove(listener);
     }
 
-    public void run (Command command) {
+    public void run () {
         for(Listener listener : listeners) {
-            listener.onUpdate(command);
+            listener.onUpdate();
         }
     }
 }

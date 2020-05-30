@@ -2,13 +2,11 @@ package ATM;
 
 import ATM.Operation.CountBills;
 import ATM.Operation.Operation;
-import ATM.Store.Box;
-import ATM.Store.Storage;
-import ATM.Store.StoreMoney;
-import ATM.Store.Value;
+import ATM.Store.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -20,6 +18,27 @@ public class ATMCityBank implements ATM {
     private int MIN_AMOUNT = 100;
     private final int ZERO_BILL = 0;
     private Box storage;
+
+    public ATMCityBank() throws Exception {
+        storage = new Storage();
+    }
+
+    Box getStorage() {
+        return this.storage;
+    }
+
+    ATMCityBank(Box storage) {
+        TreeMap<Value, StoreMoney> cells = storage.getListCells();
+        TreeMap<Value, StoreMoney> copyCells = new TreeMap<>();
+        for(Map.Entry<Value, StoreMoney> entry : cells.entrySet()) {
+            StoreMoney cell = new Cell(entry.getValue());
+            copyCells.put(entry.getKey(), cell);
+        }
+    }
+
+    public ATMCityBank copy() {
+        return new ATMCityBank(this.getStorage());
+    }
 
     public void putMoney(Value bill, int countBills) throws Exception {
         if(countBills < 1) throw new Exception("Пожалуйста вставьте купюры в купюроприёмник");

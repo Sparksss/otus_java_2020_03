@@ -12,4 +12,5 @@ public interface ATM {
     public int getBalance();
     public void emptyStorage() throws Exception;
     public void loadCashInStore(int... bills) throws Exception;
+    public ATM copy();
 }
