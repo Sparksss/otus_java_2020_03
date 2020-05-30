@@ -17,7 +17,7 @@ dependencies {
 }
 
 shadowJar {
-    archiveBaseName.set('ATMHW07')
+    archiveBaseName.set('ATMDHW07')
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
