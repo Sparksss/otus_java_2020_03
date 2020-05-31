@@ -38,5 +38,7 @@ public class MainDepartment {
         Producer producer = new Producer();
         producer.addListener(consumer);
         producer.run();
+
+        department = originator.restoreState().getDepartment();
     }
 }

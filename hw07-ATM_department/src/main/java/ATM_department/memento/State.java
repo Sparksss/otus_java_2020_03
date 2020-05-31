@@ -18,7 +18,7 @@ public class State {
         this.department = state.getDepartment().copy();
     }
 
-    ATMDepartment getDepartment() {
+    public ATMDepartment getDepartment() {
         return department;
     }
 }
