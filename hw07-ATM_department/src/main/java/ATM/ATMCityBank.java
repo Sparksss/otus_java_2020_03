@@ -19,7 +19,7 @@ public class ATMCityBank implements ATM {
     private final int ZERO_BILL = 0;
     private Box storage;
 
-    public ATMCityBank() throws Exception {
+    public ATMCityBank() {
         storage = new Storage();
     }
 
@@ -96,7 +96,7 @@ public class ATMCityBank implements ATM {
         }
     }
 
-    public void emptyStorage() throws Exception {
+    public void emptyStorage() {
         storage = new Storage();
     }
 }

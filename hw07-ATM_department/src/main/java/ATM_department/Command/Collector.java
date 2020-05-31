@@ -17,6 +17,6 @@ public class Collector implements Command {
     @Override
     public void execute() {
         int sumOfDepartment = department.collectAmountOfBalancesATM();
-        System.out.println("Total sum in department : " + sumOfDepartment);
+        System.out.println("Собранна следующая сумма остатков : " + sumOfDepartment);
     }
 }

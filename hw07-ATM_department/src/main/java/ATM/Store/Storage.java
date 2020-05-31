@@ -11,7 +11,7 @@ public class Storage implements Box {
 
     private final int ZERO_BILL = 0;
 
-    public Storage() throws Exception {
+    public Storage() {
         for(Value val : Value.values()) {
             cells.put(val, new Cell(val, ZERO_BILL));
         }

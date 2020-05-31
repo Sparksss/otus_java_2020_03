@@ -10,7 +10,7 @@ public interface ATM {
     public void putMoney(Value bill, int countBills) throws Exception;
     public int takeMoney(int amount) throws Exception;
     public int getBalance();
-    public void emptyStorage() throws Exception;
+    public void emptyStorage();
     public void loadCashInStore(int... bills) throws Exception;
     public ATM copy() throws Exception;
 }

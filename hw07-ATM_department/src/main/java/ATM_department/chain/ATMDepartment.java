@@ -51,6 +51,7 @@ public class ATMDepartment {
         int sum = 0;
         for(ATM atm : atms) {
             sum += atm.getBalance();
+            atm.emptyStorage();
         }
         return sum;
     }
