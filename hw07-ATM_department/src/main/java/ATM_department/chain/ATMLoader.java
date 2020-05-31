@@ -7,7 +7,7 @@ package ATM_department.chain;
 public class ATMLoader extends ATMProcessor {
     @Override
     protected void processInternal(ATMDepartment department) {
-        department.loadCashInATM();
+        department.loadCashInATMS();
     }
 
     @Override

@@ -5,6 +5,7 @@
 package ATM_department.chain;
 
 import ATM.ATM;
+import ATM.ATMCityBank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,22 @@ public class ATMDepartment {
         return new ATMDepartment(copyATM);
     }
 
+    public void initializeATMs(int countATMs) {
+        for(int i = 0; i < countATMs; i++) {
+            try {
+                atms.add(new ATMCityBank());
+            } catch (Exception err) {
+                System.out.println(err.getMessage());
+            }
+        }
+    }
+
+    public void loadCashInATMS() {
+        for(int i = 0; i < atms.size(); i++) {
+            loadCashInATM(i, 10, 20, 50 , 100);
+        }
+    }
+
     public ATMDepartment() {}
 
     ATMDepartment(List<ATM> atms) {
@@ -30,14 +47,12 @@ public class ATMDepartment {
         atms.add(atm);
     }
 
-    void loadCashInATM() {
-        for (ATM atm : atms) {
-            try {
-                atm.loadCashInStore(10, 20, 50, 100);
-            } catch (Exception err) {
-                System.out.println(err.getMessage());
-            }
-
+    void loadCashInATM(int numberATM, int ...cash) {
+        try {
+            ATM atm = atms.get(numberATM);
+            atm.loadCashInStore(cash);
+        } catch (Exception err) {
+            System.out.println(err.getMessage());
         }
     }
 
