@@ -14,7 +14,7 @@ public class State {
         this.department = atmDepartment;
     }
 
-    State(State state) {
+    State(State state) throws Exception {
         this.department = state.getDepartment().copy();
     }
 

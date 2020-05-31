@@ -12,7 +12,7 @@ import java.util.List;
 public class ATMDepartment {
     private List<ATM> atms = new ArrayList<>();
 
-    public ATMDepartment copy() {
+    public ATMDepartment copy() throws Exception {
         List<ATM> copyATM = new ArrayList<>();
         for(ATM atm : atms) {
             copyATM.add(atm.copy());

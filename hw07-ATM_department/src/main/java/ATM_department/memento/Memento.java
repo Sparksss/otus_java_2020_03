@@ -7,7 +7,7 @@ package ATM_department.memento;
 class Memento {
     private final State state;
 
-    Memento(State state) {
+    Memento(State state) throws Exception {
         this.state = new State(state);
     }
 

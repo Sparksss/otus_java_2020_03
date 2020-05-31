@@ -27,16 +27,16 @@ public class ATMCityBank implements ATM {
         return this.storage;
     }
 
-    ATMCityBank(Box storage) {
+    ATMCityBank(Box storage) throws Exception {
         TreeMap<Value, StoreMoney> cells = storage.getListCells();
-        TreeMap<Value, StoreMoney> copyCells = new TreeMap<>();
+        this.storage = new Storage();
         for(Map.Entry<Value, StoreMoney> entry : cells.entrySet()) {
             StoreMoney cell = entry.getValue().copy();
-            copyCells.put(entry.getKey(), cell);
+            this.storage.loadBillsInStorage(cell.getDenomination(), cell.getCountBills());
         }
     }
 
-    public ATMCityBank copy() {
+    public ATMCityBank copy() throws Exception {
         return new ATMCityBank(this.getStorage());
     }
 
@@ -85,12 +85,12 @@ public class ATMCityBank implements ATM {
 
     public void loadCashInStore(int... bills) throws Exception {
         int i = 0;
-        for(Value val : Value.values()) {
+        for(Value key : storage.getListCells().descendingKeySet()) {
             if(i < bills.length) {
                 int count = bills[i];
-                storage.loadBillsInStorage(val, count);
+                storage.loadBillsInStorage(key, count);
             } else {
-                storage.loadBillsInStorage(val, ZERO_BILL);
+                storage.loadBillsInStorage(key, ZERO_BILL);
             }
             i++;
         }

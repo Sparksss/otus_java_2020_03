@@ -25,8 +25,12 @@ public class MainDepartment {
 
         initializer.process(department);
 
-        State state = new State(department.copy());
-        originator.saveStateATM(state);
+        try {
+            State state = new State(department.copy());
+            originator.saveStateATM(state);
+        } catch (Exception err) {
+            System.out.println(err.getMessage());
+        }
 
         Command collector = new Collector(department);
         Listener consumer = new Consumer(collector);
