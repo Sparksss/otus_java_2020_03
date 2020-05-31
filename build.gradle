@@ -31,6 +31,7 @@ allprojects {
             dependency("org.ow2.asm:asm-commons:${Versions.asm}")
             dependency("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
             dependency("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
+            dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
         }
     }
 }
