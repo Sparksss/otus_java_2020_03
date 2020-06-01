@@ -4,19 +4,22 @@
 
 package MyJSON;
 
-import javax.json.Json;
+import javax.json.*;
+import java.lang.reflect.*;
 //import javax.json.JsonArray;
 //import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
+
 //import javax.json.JsonString;
 //import javax.json.JsonStructure;
 //import javax.json.JsonValue;
 
 public class MyJSON {
     public JsonObject toJson(Object obj) {
+        if(obj == null) return null;
+        JsonObjectBuilder builderJson = Json.createObjectBuilder();
 
+        JsonValue jsonValue = createJsonValue(obj.getClass(), obj);
+        return null;
     }
 
     public JsonObject toJsonExample() {
@@ -43,4 +46,19 @@ public class MyJSON {
             System.out.println("property:" + jsonFromTheFile.getValue("/firstName"));
         }
     }
+
+    private JsonValue createJsonValue(Class<?> type, Object obj) {
+      if(obj instanceof Number) {
+          Number number = (Number) obj;
+          if(obj instanceof Double || obj instanceof Float) {
+              return Json.createValue(number.doubleValue());
+          } else if(obj instanceof Integer) {
+              return Json.createValue(number.intValue());
+          }
+      } else if(obj instanceof Boolean) {
+          return obj.equals(true) ? JsonValue.TRUE : JsonValue.FALSE;
+      }
+      return null;
+    }
+
 }
