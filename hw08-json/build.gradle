@@ -10,6 +10,7 @@ dependencies {
     // This dependency is used by the application.
     implementation 'org.glassfish:javax.json'
     implementation 'javax.json:javax.json-api:1.1.4'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 shadowJar {

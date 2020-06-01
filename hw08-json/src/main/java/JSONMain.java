@@ -1,4 +1,5 @@
 import MyJSON.MyJSON;
+import com.google.gson.Gson;
 
 /**
  * Created by Ilya Rogatkin, May 2020
@@ -6,7 +7,12 @@ import MyJSON.MyJSON;
 
 public class JSONMain {
     public static void main(String[] args) {
+        ExampleClass ec = new ExampleClass();
         MyJSON myJSON = new MyJSON();
-        myJSON.toJson();
+        myJSON.toJson(ec);
+
+//        Gson gson = new Gson();
+//        String json = gson.toJson(ec);
+//        System.out.println(json);
     }
 }
