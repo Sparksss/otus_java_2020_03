@@ -6,8 +6,12 @@ import java.util.ArrayList;
 
 public class ExampleClass {
     public int number;
+//    private String name;
+    private int[] arr = {1,2,3,4,5};
+    private double digit;
 
-    public ExampleClass() {
-        this.number = 42;
+    public ExampleClass(int number, double digit) {
+        this.number = number;
+        this.digit = digit;
     }
 }

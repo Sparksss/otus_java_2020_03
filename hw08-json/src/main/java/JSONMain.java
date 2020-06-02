@@ -7,9 +7,10 @@ import com.google.gson.Gson;
 
 public class JSONMain {
     public static void main(String[] args) {
-        ExampleClass ec = new ExampleClass();
+        ExampleClass ec = new ExampleClass(42,123.5634D);
         MyJSON myJSON = new MyJSON();
-        myJSON.toJson(ec);
+        String s =  myJSON.toJson(ec);
+        System.out.println(s);
 
 //        Gson gson = new Gson();
 //        String json = gson.toJson(ec);
