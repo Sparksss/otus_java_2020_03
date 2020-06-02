@@ -2,9 +2,9 @@
  * Created by Ilya Rogatkin, May 2020
  */
 
-package ATM_department.Command;
+package ATMDepartment.Command;
 
-import ATM_department.chain.ATMDepartment;
+import ATMDepartment.chain.ATMDepartment;
 
 public class Collector implements Command {
     private ATMDepartment department;

@@ -1,11 +1,11 @@
-import ATM_department.Command.Collector;
-import ATM_department.Command.Command;
-import ATM_department.chain.*;
-import ATM_department.memento.Originator;
-import ATM_department.memento.State;
-import ATM_department.observer.Consumer;
-import ATM_department.observer.Listener;
-import ATM_department.observer.Producer;
+import ATMDepartment.Command.Collector;
+import ATMDepartment.Command.Command;
+import ATMDepartment.chain.*;
+import ATMDepartment.memento.Originator;
+import ATMDepartment.memento.State;
+import ATMDepartment.observer.Consumer;
+import ATMDepartment.observer.Listener;
+import ATMDepartment.observer.Producer;
 
 /**
  * Created by Ilya Rogatkin, May 2020

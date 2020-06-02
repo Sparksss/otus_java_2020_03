@@ -2,7 +2,7 @@
  * Created by Ilya Rogatkin, May 2020
  */
 
-package ATM_department.memento;
+package ATMDepartment.memento;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

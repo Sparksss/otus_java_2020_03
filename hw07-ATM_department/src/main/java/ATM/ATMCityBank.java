@@ -36,6 +36,7 @@ public class ATMCityBank implements ATM {
         }
     }
 
+    @Override
     public ATMCityBank copy() throws Exception {
         return new ATMCityBank(this.getStorage());
     }
@@ -62,7 +63,7 @@ public class ATMCityBank implements ATM {
         int totalBalance = this.getBalance();
         int calculateAmount = amount;
         int availableCountBills;
-        if(totalBalance < amount) throw new Exception("К сожалению не возможно выдать данную сумму");
+        if(totalBalance < amount) throw new RuntimeException("К сожалению не возможно выдать данную сумму");
 
         Operation countBills = new CountBills();
         Map<Value, Integer> availableStoreBills = new HashMap<>();

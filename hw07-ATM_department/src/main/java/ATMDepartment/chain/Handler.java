@@ -2,7 +2,7 @@
  * Created by Ilya Rogatkin, May 2020
  */
 
-package ATM_department.chain;
+package ATMDepartment.chain;
 
 public interface Handler {
     void setNext(Handler next);

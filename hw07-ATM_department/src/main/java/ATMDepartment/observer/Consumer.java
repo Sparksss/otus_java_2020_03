@@ -2,9 +2,9 @@
  * Created by Ilya Rogatkin, May 2020
  */
 
-package ATM_department.observer;
+package ATMDepartment.observer;
 
-import ATM_department.Command.Command;
+import ATMDepartment.Command.Command;
 
 public class Consumer implements Listener {
 

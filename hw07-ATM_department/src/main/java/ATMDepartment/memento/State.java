@@ -2,9 +2,9 @@
  * Created by Ilya Rogatkin, May 2020
  */
 
-package ATM_department.memento;
+package ATMDepartment.memento;
 
-import ATM_department.chain.ATMDepartment;
+import ATMDepartment.chain.ATMDepartment;
 
 public class State {
 
