@@ -7,4 +7,5 @@ include 'hw03-test_framework'
 include 'hw04-garbage_collector'
 include 'hw05-auto_logger'
 include 'hw06-ATM_manager'
+include 'hw07-ATM_department'
 
