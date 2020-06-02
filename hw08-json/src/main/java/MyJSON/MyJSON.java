@@ -4,18 +4,17 @@
 
 package MyJSON;
 
-import javax.json.*;
-import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.ArrayList;
-//import javax.json.JsonArray;
-//import javax.json.JsonNumber;
+import Checker.Check;
+import Checker.Cheker;
 
-//import javax.json.JsonString;
-//import javax.json.JsonStructure;
-//import javax.json.JsonValue;
+import javax.json.*;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class MyJSON {
+
+    private Cheker check = new Check();
+
     public String toJson(Object obj) {
         if(obj == null) return null;
         JsonValue jsonValue = createJsonValue(obj.getClass(), obj);
@@ -23,24 +22,24 @@ public class MyJSON {
     }
 
     private JsonValue createJsonValue(Class<?> type, Object obj) {
-        if(this.isPrimitive(type)) {
+        boolean isNullValue = this.check.isNull(obj);
+
+        if (check.isPrimitive(type)) {
             return this.createPrimitiveValue(obj);
-        } else if(type.isArray()) {
-            return this.createJsonArray(obj);
+        } else if (type.isArray()) {
+            return isNullValue ? JsonArray.EMPTY_JSON_ARRAY : this.createJsonArray(obj);
+        } else if(Collection.class.isAssignableFrom(type)) {
+            Collection collection = (Collection) obj;
+            return isNullValue ? JsonArray.EMPTY_JSON_ARRAY : this.createJsonArray(collection.toArray());
+        } else if(Map.class.isAssignableFrom(type)) {
+            return isNullValue ? JsonObject.EMPTY_JSON_OBJECT : this.createMapValue(obj);
         } else {
             try {
-                return this.createJsonObject(obj);
+                return isNullValue ? JsonObject.EMPTY_JSON_OBJECT : this.createJsonObject(obj);
             } catch (Exception err) {
                 return JsonValue.NULL;
             }
         }
-    }
-
-    private boolean isPrimitive(Class<?> clazz) {
-        return clazz.isPrimitive() ||
-                Number.class.isAssignableFrom(clazz) ||
-                Boolean.class.isAssignableFrom(clazz) ||
-                Character.class.isAssignableFrom(clazz);
     }
 
     private JsonValue createPrimitiveValue(Object obj) {
@@ -66,16 +65,11 @@ public class MyJSON {
             field.setAccessible(true);
             int modifiers = field.getModifiers();
             Object objectValue = field.get(obj);
-            if(objectValue != null && isNotSerialized(modifiers)) {
+            if(objectValue != null && !check.isSerializedField(modifiers)) {
                 jsonObjectBuilder.add(field.getName(), createJsonValue(field.getType(), objectValue));
             }
         }
-
         return jsonObjectBuilder.build();
-    }
-
-    private boolean isNotSerialized(int modifiers) {
-        return !Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers);
     }
 
     private JsonArray createJsonArray(Object obj) {
@@ -88,12 +82,14 @@ public class MyJSON {
         return jab.build();
     }
 
-    private static void readFromFile() {
-        try (JsonReader jsonReader = Json.createReader(MyJSON.class.getClassLoader().getResourceAsStream("jsondata.json"))) {
-            JsonStructure jsonFromTheFile = jsonReader.read();
-            System.out.println("\n json from the file:");
-            System.out.println(jsonFromTheFile);
-            System.out.println("property:" + jsonFromTheFile.getValue("/firstName"));
+    private JsonValue createMapValue(Object obj) {
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        Map<?, ?> map = (Map<?,?>) obj;
+        for(Map.Entry<?,?> pair : map.entrySet()) {
+            String key = pair.getKey().toString();
+            Object value = pair.getValue();
+            objectBuilder.add(key, createJsonValue(value.getClass(), value));
         }
+        return objectBuilder.build();
     }
 }
