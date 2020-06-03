@@ -13,9 +13,7 @@ public class JSONMain {
         System.out.println(myJSONString);
 
         Gson gson = new Gson();
-        String json = gson.toJson(obj);
-        System.out.println(json);
-        ExampleClass obj2 = gson.fromJson(json, ExampleClass.class);
+        ExampleClass obj2 = gson.fromJson(myJSONString, ExampleClass.class);
         System.out.println(obj.equals(obj2));
     }
 }
