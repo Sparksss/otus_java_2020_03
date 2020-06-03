@@ -32,14 +32,15 @@ public class MyJSON {
             Collection collection = (Collection) obj;
             return isNullValue ? JsonArray.EMPTY_JSON_ARRAY : this.createJsonArray(collection.toArray());
         } else if(Map.class.isAssignableFrom(type)) {
-            return isNullValue ? JsonObject.EMPTY_JSON_OBJECT : this.createMapValue(obj);
+            return isNullValue ? JsonValue.EMPTY_JSON_OBJECT : this.createMapValue(obj);
         } else {
             try {
-                return isNullValue ? JsonObject.EMPTY_JSON_OBJECT : this.createJsonObject(obj);
+                return this.createJsonObject(obj);
             } catch (Exception err) {
-                return JsonValue.NULL;
+                System.out.println(err.getMessage());
             }
         }
+        return JsonValue.NULL;
     }
 
     private JsonValue createPrimitiveValue(Object obj) {
@@ -77,7 +78,11 @@ public class MyJSON {
         int size = Array.getLength(obj);
         for(int i = 0; i < size; i++) {
             Object val = Array.get(obj, i);
-            jab.add(createJsonValue(val.getClass(), val));
+            if(this.check.isNull(val)) {
+                jab.add(JsonValue.NULL);
+            } else {
+                jab.add(createJsonValue(val.getClass(), val));
+            }
         }
         return jab.build();
     }

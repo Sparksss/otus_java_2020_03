@@ -23,7 +23,8 @@ public class ExampleClass {
         this.numbers.add(42);
         this.numbers.add(42);
         this.numbers.add(44);
-
+        this.numbers.add(null);
+        this.numbers.add(null);
     }
 
     @Override
@@ -35,8 +36,8 @@ public class ExampleClass {
                 Double.compare(that.digit, digit) == 0 &&
                 Objects.equals(name, that.name) &&
                 Arrays.equals(ch, that.ch) &&
-                list.equals(that.list) &&
-                numbers.equals(that.numbers);
+                Objects.equals(list, that.list) &&
+                Objects.equals(numbers, that.numbers);
     }
 
     @Override

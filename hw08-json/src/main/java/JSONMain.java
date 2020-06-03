@@ -10,9 +10,12 @@ public class JSONMain {
         ExampleClass obj = new ExampleClass(42,"John",123.5634D);
         MyJSON myJSON = new MyJSON();
         String myJSONString =  myJSON.toJson(obj);
+        System.out.println(myJSONString);
 
         Gson gson = new Gson();
-        ExampleClass obj2 = gson.fromJson(myJSONString, ExampleClass.class);
+        String json = gson.toJson(obj);
+        System.out.println(json);
+        ExampleClass obj2 = gson.fromJson(json, ExampleClass.class);
         System.out.println(obj.equals(obj2));
     }
 }

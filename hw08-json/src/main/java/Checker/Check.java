@@ -5,7 +5,6 @@
 package Checker;
 
 import java.lang.reflect.Modifier;
-import java.util.Objects;
 
 public class Check implements Cheker {
 
@@ -25,6 +24,6 @@ public class Check implements Cheker {
 
     @Override
     public boolean isNull(Object obj) {
-        return Objects.isNull(obj);
+        return obj == null;
     }
 }
