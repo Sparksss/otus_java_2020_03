@@ -13,7 +13,7 @@ import java.util.*;
 
 public class MyJSON {
 
-    private Cheker check = new Check();
+    private final Cheker check = new Check();
 
     public String toJson(Object obj) {
         if(obj == null) return null;
