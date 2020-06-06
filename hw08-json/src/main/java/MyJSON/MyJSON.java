@@ -18,7 +18,7 @@ public class MyJSON {
     public String toJson(Object obj) {
         if(obj == null) return JsonValue.EMPTY_JSON_OBJECT.toString();
         JsonValue jsonValue = createJsonValue(obj.getClass(), obj);
-        return jsonValue != null ? jsonValue.toString() : null;
+        return jsonValue.toString();
     }
 
     private JsonValue createJsonValue(Class<?> type, Object obj) {
