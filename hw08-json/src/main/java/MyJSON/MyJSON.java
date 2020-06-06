@@ -22,25 +22,27 @@ public class MyJSON {
     }
 
     private JsonValue createJsonValue(Class<?> type, Object obj) {
-        boolean isNullValue = this.check.isNull(obj);
+        if(this.check.isNull(obj)) {
+            return this.determineEmptyType(type);
+        }
 
         if (check.isPrimitive(type)) {
             return this.createPrimitiveValue(obj);
         } else if (type.isArray()) {
-            return isNullValue ? JsonArray.EMPTY_JSON_ARRAY : this.createJsonArray(obj);
+            return this.createJsonArray(obj);
         } else if(Collection.class.isAssignableFrom(type)) {
             Collection collection = (Collection) obj;
-            return isNullValue ? JsonArray.EMPTY_JSON_ARRAY : this.createJsonArray(collection.toArray());
+            return this.createJsonArray(collection.toArray());
         } else if(Map.class.isAssignableFrom(type)) {
-            return isNullValue ? JsonValue.EMPTY_JSON_OBJECT : this.createMapValue(obj);
+            return this.createMapValue(obj);
         } else {
             try {
                 return this.createJsonObject(obj);
             } catch (Exception err) {
                 System.out.println(err.getMessage());
+                return JsonValue.EMPTY_JSON_OBJECT;
             }
         }
-        return JsonValue.NULL;
     }
 
     private JsonValue createPrimitiveValue(Object obj) {
@@ -66,7 +68,7 @@ public class MyJSON {
             field.setAccessible(true);
             int modifiers = field.getModifiers();
             Object objectValue = field.get(obj);
-            if(objectValue != null && !check.isSerializedField(modifiers)) {
+            if(!check.isSerializedField(modifiers)) {
                 jsonObjectBuilder.add(field.getName(), createJsonValue(field.getType(), objectValue));
             }
         }
@@ -96,5 +98,15 @@ public class MyJSON {
             objectBuilder.add(key, createJsonValue(value.getClass(), value));
         }
         return objectBuilder.build();
+    }
+
+    private JsonValue determineEmptyType(Class<?> type) {
+        if(type.isArray() || Collection.class.isAssignableFrom(type)) {
+            return JsonValue.EMPTY_JSON_ARRAY;
+        } else if(Map.class.isAssignableFrom(type)) {
+            return JsonValue.EMPTY_JSON_OBJECT;
+        } else {
+            return JsonValue.NULL;
+        }
     }
 }
