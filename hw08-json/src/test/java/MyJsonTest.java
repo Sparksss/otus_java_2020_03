@@ -21,11 +21,6 @@ public class MyJsonTest {
     }
 
     @Test
-    public void CheckEqualsNullJson() {
-        assertEquals(myjson.toJson(null), gson.toJson(null));
-    }
-
-    @Test
     public void checkEqualsByteType() {
         assertEquals(myjson.toJson((byte)1), gson.toJson((byte)1));
     }

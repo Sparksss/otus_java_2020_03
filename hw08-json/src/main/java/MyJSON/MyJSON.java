@@ -16,7 +16,7 @@ public class MyJSON {
     private final Cheker check = new Check();
 
     public String toJson(Object obj) {
-        if(obj == null) return JsonValue.NULL.toString();
+        if(obj == null) return JsonValue.EMPTY_JSON_OBJECT.toString();
         JsonValue jsonValue = createJsonValue(obj.getClass(), obj);
         return jsonValue.toString();
     }
