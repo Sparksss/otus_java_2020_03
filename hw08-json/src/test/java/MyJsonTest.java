@@ -3,7 +3,6 @@ import MyJSON.MyJSON;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,5 +78,21 @@ public class MyJsonTest {
     @Test
     public void checkCollectionsSigletonList() {
         assertEquals(myjson.toJson(Collections.singletonList(1)), gson.toJson(Collections.singletonList(1)));
+    }
+
+    @Test
+    public void checkMyObjectEquals() {
+        ExampleClass example = new ExampleClass(42,"John",123.5634D);
+        String jsonExample = myjson.toJson(example);
+        ExampleClass example2 = gson.fromJson(jsonExample, ExampleClass.class);
+        assertEquals(example, example2);
+    }
+
+    @Test
+    public void checkMyObjectStringJsonEquals() {
+        ExampleClass example = new ExampleClass(42,"John",123.5634D);
+        String jsonExample = myjson.toJson(example);
+        String gsonExample = gson.toJson(example);
+        assertEquals(jsonExample, gsonExample);
     }
 }
