@@ -10,5 +10,4 @@ include 'hw06-ATM_manager'
 include 'hw07-ATM_department'
 include 'hw08-json'
 include 'hw09-ORM'
-include 'hw09-orm'
 

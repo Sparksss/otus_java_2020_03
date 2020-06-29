@@ -12,3 +12,14 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic'
     implementation 'org.slf4j:slf4j-api'
 }
+
+shadowJar {
+    archiveBaseName.set('ORMHW09')
+    archiveVersion.set('0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'ru.otus.ORMMain'
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
