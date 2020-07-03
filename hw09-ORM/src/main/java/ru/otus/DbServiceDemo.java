@@ -31,7 +31,7 @@ public class DbServiceDemo {
         var userDao = new UserDaoJdbc(sessionManager, dbExecutor);
 
         var dbServiceUser = new DbServiceUserImpl(userDao);
-        var id = dbServiceUser.saveUser(new User(0, "dbServiceUser"));
+        var id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 0));
         Optional<User> user = dbServiceUser.getUser(id);
 
         user.ifPresentOrElse(
@@ -43,7 +43,7 @@ public class DbServiceDemo {
 
     private void createTable(DataSource dataSource) throws SQLException {
         try (var connection = dataSource.getConnection();
-             var pst = connection.prepareStatement("create table user(id bigint(20) NOT NULL auto_increment, name varchar(50))")) {
+             var pst = connection.prepareStatement("create table user(id bigint(20) NOT NULL auto_increment, name varchar(50), age int(3))")) {
             pst.executeUpdate();
         }
         System.out.println("table created");

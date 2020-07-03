@@ -26,16 +26,16 @@ public class ExecutorDemo {
             demo.createTable(connection);
 
             DbExecutorImpl<User> executor = new DbExecutorImpl<>();
-            long userId = executor.executeInsert(connection, "insert into user(name) values (?)",
+            long userId = executor.executeInsert(connection, "insert into user (name) values (?)",
                     Collections.singletonList("testUserName"));
             logger.info("created user:{}", userId);
             connection.commit();
 
-            Optional<User> user = executor.executeSelect(connection, "select id, name from user where id  = ?",
+            Optional<User> user = executor.executeSelect(connection, "select id, name, age from user where id  = ?",
                     userId, rs -> {
                         try {
                             if (rs.next()) {
-                                return new User(rs.getLong("id"), rs.getString("name"));
+                                return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"));
                             }
                         } catch (SQLException e) {
                             logger.error(e.getMessage(), e);
@@ -53,7 +53,7 @@ public class ExecutorDemo {
     }
 
     private void createTable(Connection connection) throws SQLException {
-        try (PreparedStatement pst = connection.prepareStatement("create table user(id long auto_increment, name varchar(50))")) {
+        try (PreparedStatement pst = connection.prepareStatement("create table user(id bigint(20) NOT NULL auto_increment, name varchar(50), age int(3))")) {
             pst.executeUpdate();
         }
     }

@@ -1,10 +1,14 @@
 package ru.otus.core.model;
 
+import ru.otus.annotations.Id;
+
 /**
  * @author sergey
  * created on 03.02.19.
  */
 public class User {
+
+    @Id
     private final long id;
     private final String name;
     private final int age;
