@@ -18,7 +18,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getSelectByIdSql() {
-        return "SELECT * FROM " + this.entityClassMetaData.getName() + " WHERE id = (?)";
+        return "SELECT * FROM " + this.entityClassMetaData.getName() + " WHERE " + this.entityClassMetaData.getIdField().getName() + " = (?)";
     }
 
     @Override
@@ -49,12 +49,12 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         List<Field> fields = this.entityClassMetaData.getFieldsWithoutId();
         int countFields = fields.size();
         for(int i = 0; i < countFields; i++) {
-            query.append(fields.get(i).getName() + " = ?");
+            query.append(fields.get(i).getName() + " = (?)");
             if(!((i + 1) == countFields)) {
                 query.append(", ");
             }
         }
-        query.append(" WHERE id = (?)");
+        query.append(" WHERE " + this.entityClassMetaData.getIdField().getName() + " = (?)");
         return query.toString();
     }
 }

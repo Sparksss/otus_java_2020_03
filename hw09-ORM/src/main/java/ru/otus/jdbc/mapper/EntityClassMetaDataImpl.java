@@ -33,21 +33,15 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Field getIdField() {
-        Field field = null;
-        try {
-            Field f = this.clazz.getField("id");
+        for(Field f: this.getAllFields()) {
             Annotation[] annotations = f.getDeclaredAnnotations();
             for(Annotation annotation : annotations) {
                 if(annotation instanceof Id) {
-                   field = f;
-                   break;
+                    return f;
                 }
             }
-        } catch (NoSuchFieldException exp) {
-            System.out.println(exp.getMessage());
-            return null;
         }
-        return field;
+        return null;
     }
 
     @Override

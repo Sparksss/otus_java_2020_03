@@ -55,12 +55,56 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public void update(T objectData) {
+        List<Object> values = new ArrayList<>();
+        try {
+            for(Field f : this.entityClassMetaData.getFieldsWithoutId()) {
+                values.add(f.get(objectData));
+            }
 
+            Field f = this.entityClassMetaData.getIdField();
+            if(f == null) throw new NoSuchFieldIdException(new Exception("No such field id exception"));
+            long id = Long.parseLong(f.get(objectData).toString());
+
+            values.add(id);
+
+            this.sessionManager.beginSession();
+
+            this.dbExecutor.executeInsert(this.sessionManager.getCurrentSession().getConnection(), this.entitySQLMetaData.getUpdateSql(), values);
+
+            this.sessionManager.commitSession();
+
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } catch (IllegalAccessException e) {
+            this.logger.error(e.getMessage());
+        } catch (NoSuchFieldIdException e) {
+            this.logger.error(e.getMessage());
+        }
     }
 
     @Override
     public void insertOrUpdate(T objectData) {
+        try {
+            Field f = this.entityClassMetaData.getIdField();
+            if(f == null) throw new NoSuchFieldIdException(new Exception("No such field id exception"));
+            Object val = f.get(objectData);
+            if(val == null) {
+                this.insert(objectData);
+            } else {
+                long id = Long.parseLong(val.toString());
+                Object obj = this.findById(id, objectData.getClass());
+                if(obj == null) {
+                    this.insert(objectData);
+                } else {
+                    this.update(objectData);
+                }
+            }
 
+        } catch (NoSuchFieldIdException e) {
+            this.logger.error(e.getMessage());
+        } catch (IllegalAccessException e) {
+            this.logger.error(e.getMessage());
+        }
     }
 
     @Override
