@@ -3,24 +3,54 @@ package ru.otus.jdbc.mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ru.otus.core.dao.UserDao;
-import ru.otus.core.service.DbServiceUserImpl;
+import ru.otus.core.sessionmanager.SessionManager;
+import ru.otus.h2.DataSourceH2;
 import ru.otus.jdbc.DbExecutor;
-import ru.otus.jdbc.mapper.EntityClassMetaData;
-import ru.otus.jdbc.mapper.EntitySQLMetaDataImpl;
-import ru.otus.jdbc.mapper.EntitySQLMetaData;
-import ru.otus.jdbc.mapper.EntitySQLMetaDataImpl;
+import ru.otus.jdbc.DbExecutorImpl;
+import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(JdbcMapperImpl.class);
     private EntitySQLMetaData entitySQLMetaData;
-    private EntityClassMetaData entityClassMetaData;
+    private EntityClassMetaData<T> entityClassMetaData;
+    private DbExecutor<T> dbExecutor;
+    private SessionManagerJdbc sessionManager;
+    private static final Logger logger = LoggerFactory.getLogger(JdbcMapperImpl.class);
+
+    public JdbcMapperImpl(DbExecutor<T> dbExecutor, SessionManagerJdbc sessionManager, Class clazz) {
+        this.dbExecutor = dbExecutor;
+        this.sessionManager = sessionManager;
+        this.entityClassMetaData = new EntityClassMetaDataImpl<T>(clazz);
+        this.entitySQLMetaData = new EntitySQLMetaDataImpl(this.entityClassMetaData);
+    }
 
     @Override
     public void insert(T objectData) {
+        List<Object> values = new ArrayList<>();
+        try {
+            for(Field f : this.entityClassMetaData.getAllFields()) {
+                values.add(f.get(objectData));
+            }
 
+            this.sessionManager.beginSession();
+
+            this.dbExecutor.executeInsert(this.sessionManager.getCurrentSession().getConnection(), this.entitySQLMetaData.getInsertSql(), values);
+
+            this.sessionManager.commitSession();
+
+        } catch (SQLException e) {
+            this.logger.error(e.getMessage());
+        } catch (IllegalAccessException e) {
+            this.logger.error(e.getMessage());
+        }
     }
 
     @Override
@@ -34,7 +64,37 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     }
 
     @Override
-    public Object findById(long id, Class clazz) {
+    public T findById(long id, Class clazz) {
+        final Constructor<T> constructor = this.entityClassMetaData.getConstructor();
+        Optional<T> extractedObj;
+        T object;
+        try {
+            this.sessionManager.beginSession();
+            extractedObj = this.dbExecutor.executeSelect(this.sessionManager.getCurrentSession().getConnection(), this.entitySQLMetaData.getSelectByIdSql(), id, rs -> {
+                        try {
+                            if (rs.next()) {
+                                T obj = constructor.newInstance();
+                                List<Field> fields = this.entityClassMetaData.getAllFields();
+                                for (Field f : fields) {
+                                    f.setAccessible(true);
+                                    f.set(obj, rs.getObject(f.getName()));
+                                }
+                                return obj;
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage());
+                        }
+                        return null;
+                    });
+            this.sessionManager.commitSession();
+            object = extractedObj.orElse(null);
+            if (object == null) {
+                this.logger.debug("Object with id was not found", id);
+            }
+            return object;
+        } catch (SQLException e) {
+            this.logger.error("Bad SQL Query: ", e);
+        }
         return null;
     }
 }

@@ -7,6 +7,7 @@ import ru.otus.core.service.DbServiceUserImpl;
 import ru.otus.h2.DataSourceH2;
 import ru.otus.jdbc.DbExecutorImpl;
 import ru.otus.jdbc.dao.UserDaoJdbc;
+import ru.otus.jdbc.mapper.JdbcMapperImpl;
 import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;
@@ -22,22 +23,27 @@ public class DbServiceDemo {
 
     public static void main(String[] args) throws Exception {
         var dataSource = new DataSourceH2();
+        var sessionManager = new SessionManagerJdbc(dataSource);
         var demo = new DbServiceDemo();
 
         demo.createTable(dataSource);
 
-        var sessionManager = new SessionManagerJdbc(dataSource);
+        User user = new User(0, "dbServiceUser", 0);
         DbExecutorImpl<User> dbExecutor = new DbExecutorImpl<>();
-        var userDao = new UserDaoJdbc(sessionManager, dbExecutor);
 
-        var dbServiceUser = new DbServiceUserImpl(userDao);
-        var id = dbServiceUser.saveUser(new User(0, "dbServiceUser", 0));
-        Optional<User> user = dbServiceUser.getUser(id);
+        var jdbcMapper = new JdbcMapperImpl(dbExecutor, sessionManager, user.getClass());
+        jdbcMapper.insert(user);
+        var id = jdbcMapper.findById(0, user.getClass());
+        System.out.println(id.toString());
 
-        user.ifPresentOrElse(
-                crUser -> logger.info("created user, name:{}", crUser.getName()),
-                () -> logger.info("user was not created")
-        );
+//        var dbServiceUser = new DbServiceUserImpl(userDao);
+//        var id = dbServiceUser.saveUser();
+//        Optional<User> user = dbServiceUser.getUser(id);
+//
+//        user.ifPresentOrElse(
+//                crUser -> logger.info("created user, name:{}", crUser.getName()),
+//                () -> logger.info("user was not created")
+//        );
 
     }
 

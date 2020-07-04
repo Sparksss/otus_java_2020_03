@@ -6,7 +6,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
@@ -19,7 +18,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public String getName() {
-        return this.clazz.getName();
+        return this.clazz.getSimpleName();
     }
 
     @Override
@@ -41,6 +40,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             for(Annotation annotation : annotations) {
                 if(annotation instanceof Id) {
                    field = f;
+                   break;
                 }
             }
         } catch (NoSuchFieldException exp) {
@@ -52,24 +52,31 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public List<Field> getAllFields() {
-        return Arrays.asList(this.clazz.getFields());
+        List<Field> fields = new ArrayList<>();
+        for(Field f : this.clazz.getDeclaredFields()) {
+            f.setAccessible(true);
+            fields.add(f);
+        }
+        return fields;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
         List<Field> fields = new ArrayList<>();
-        for(Field field: this.clazz.getDeclaredFields()) {
+        boolean isIdField = false;
+        for(Field field: this.getAllFields()) {
             Annotation[] annotations = field.getDeclaredAnnotations();
-            boolean IsFieldHaveIdAnnotation = false;
             for(Annotation annotation : annotations) {
                 if(annotation instanceof Id) {
-                    IsFieldHaveIdAnnotation = true;
+                    isIdField = true;
                     break;
                 }
             }
-            if(!IsFieldHaveIdAnnotation) {
+            if(!isIdField) {
                 fields.add(field);
             }
+            isIdField = false;
+
         }
         return fields;
     }
