@@ -15,16 +15,28 @@ public class User {
     @Column(name = "name")
     private String name;
 
+
+    @Column(name = "id_address")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private long idAddress;
+
+    @Column(name = "phone")
+    @OneToMany()
+    private long idPhone;
+
     public User() {
     }
 
-    public User(long id, String name) {
+    public User(long id, String name, long idAddress, long idPhone) {
         this.id = id;
         this.name = name;
+        this.idAddress = idAddress;
+        this.idPhone = idPhone;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -32,11 +44,27 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public long getIdAddress() {
+        return this.idAddress;
+    }
+
+    public void setIdAddress(long idAddress) {
+        this.idAddress = idAddress;
+    }
+
+    public long getIdPhone() {
+        return this.idPhone;
+    }
+
+    public void setIdPhone(long idPhone) {
+        this.idPhone = idPhone;
     }
 
     @Override
