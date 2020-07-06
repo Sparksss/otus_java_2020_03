@@ -12,6 +12,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private final Class<T> clazz;
 
+    private Field id;
+
     public EntityClassMetaDataImpl(Class<T> clazz) {
         this.clazz = clazz;
     }
@@ -33,10 +35,12 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Field getIdField() {
+        if(id != null) return this.id;
         for(Field f: this.getAllFields()) {
             Annotation[] annotations = f.getDeclaredAnnotations();
             for(Annotation annotation : annotations) {
                 if(annotation instanceof Id) {
+                    this.id = f;
                     return f;
                 }
             }
