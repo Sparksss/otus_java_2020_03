@@ -57,20 +57,11 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     @Override
     public List<Field> getFieldsWithoutId() {
         List<Field> fields = new ArrayList<>();
-        boolean isIdField = false;
         for(Field field: this.getAllFields()) {
-            Annotation[] annotations = field.getDeclaredAnnotations();
-            for(Annotation annotation : annotations) {
-                if(annotation instanceof Id) {
-                    isIdField = true;
-                    break;
-                }
-            }
-            if(!isIdField) {
+            Annotation idAnnotation = field.getAnnotation(Id.class);
+            if(idAnnotation == null) {
                 fields.add(field);
             }
-            isIdField = false;
-
         }
         return fields;
     }
