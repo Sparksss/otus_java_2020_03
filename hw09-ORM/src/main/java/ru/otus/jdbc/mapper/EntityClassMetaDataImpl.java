@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public EntityClassMetaDataImpl(Class<T> clazz) {
         this.clazz = clazz;
