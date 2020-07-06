@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
-    private EntityClassMetaData entityClassMetaData;
+    private final EntityClassMetaData entityClassMetaData;
 
     public EntitySQLMetaDataImpl(EntityClassMetaData entityClassMetaData) {
         this.entityClassMetaData = entityClassMetaData;
