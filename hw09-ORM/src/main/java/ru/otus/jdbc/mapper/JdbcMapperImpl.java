@@ -33,7 +33,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     }
 
     @Override
-    public void insert(T objectData) {
+    public void insert(T objectData) throws SQLException {
         List<Object> values = new ArrayList<>();
         try {
             for(Field f : this.entityClassMetaData.getAllFields()) {
@@ -46,15 +46,13 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
             this.sessionManager.commitSession();
 
-        } catch (SQLException e) {
-            this.logger.error(e.getMessage());
         } catch (IllegalAccessException e) {
             this.logger.error(e.getMessage());
         }
     }
 
     @Override
-    public void update(T objectData) {
+    public void update(T objectData) throws SQLException {
         List<Object> values = new ArrayList<>();
         try {
             for(Field f : this.entityClassMetaData.getFieldsWithoutId()) {
@@ -73,8 +71,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
             this.sessionManager.commitSession();
 
-        } catch (SQLException e) {
-            this.logger.error(e.getMessage());
         } catch (IllegalAccessException e) {
             this.logger.error(e.getMessage());
         } catch (NoSuchFieldIdException e) {
@@ -100,7 +96,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                 }
             }
 
-        } catch (NoSuchFieldIdException e) {
+        } catch (NoSuchFieldIdException | SQLException e) {
             this.logger.error(e.getMessage());
         } catch (IllegalAccessException e) {
             this.logger.error(e.getMessage());
