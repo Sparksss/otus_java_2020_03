@@ -1,13 +1,16 @@
 package ru.otus.core.model;
 
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
+    @GenericGenerator(name = "phones_generator", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private long id;
@@ -15,24 +18,23 @@ public class User {
     @Column(name = "name")
     private String name;
 
+    @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_address")
+    private AddressDataSet address;
 
-    @Column(name = "id_address")
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private long idAddress;
 
-    @Column(name = "phone")
-    @OneToMany()
-    private long idPhone;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<PhoneDataSet> phones;
 
     public User() {
     }
 
-    public User(long id, String name, long idAddress, long idPhone) {
+    public User(long id, String name, String street, List<PhoneDataSet> phones) {
         this.id = id;
         this.name = name;
-        this.idAddress = idAddress;
-        this.idPhone = idPhone;
+        this.address = new AddressDataSet(street);
+        this.phones = phones;
+        phones.stream().forEach(p -> p.setUser(this));
     }
 
     public long getId() {
@@ -51,27 +53,38 @@ public class User {
         this.name = name;
     }
 
-    public long getIdAddress() {
-        return this.idAddress;
+    public String getStreet() {
+        return address.getStreet();
     }
 
-    public void setIdAddress(long idAddress) {
-        this.idAddress = idAddress;
+    public void setAddress(String street) {
+        this.address.setStreet(street);
     }
 
-    public long getIdPhone() {
-        return this.idPhone;
+    public List<PhoneDataSet> getPhones() {
+        return this.phones;
     }
 
-    public void setIdPhone(long idPhone) {
-        this.idPhone = idPhone;
-    }
+//    public void setPhoneNumber(String oldNumber, String newNumber) {
+//        for(PhoneDataSet phone : this.phones) {
+//            if(phone.getNumber().equals(oldNumber)) {
+//                phone.setNumber(newNumber);
+//            }
+//        }
+//    }
 
     @Override
     public String toString() {
+        StringBuilder s = new StringBuilder();
+        for(PhoneDataSet phone : this.phones) {
+            s.append(phone.getNumber() + " ");
+        }
+
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", street' " + address.getStreet() +
+                ", phones' " + s.toString() +
                 '}';
     }
 }

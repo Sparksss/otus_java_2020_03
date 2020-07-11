@@ -1,18 +1,37 @@
 package ru.otus.core.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "address")
 public class AddressDataSet {
 
+    public AddressDataSet() {}
+
+    public AddressDataSet(String street) {
+        this.street = street;
+    }
+
     @Id
+    @GenericGenerator(name = "address_generator", strategy = "increment")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_address")
+    @Column(name = "id_address")
     private long id;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "street")
+    private String street;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
 }

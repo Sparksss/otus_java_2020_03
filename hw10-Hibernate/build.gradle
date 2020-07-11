@@ -20,13 +20,10 @@ dependencies {
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 }
 
-shadowJar {
-    archiveBaseName.set('HIBERNATEHW10')
-    archiveVersion.set('0.1')
-    archiveClassifier.set('')
-    manifest {
-        attributes 'Main-Class': 'ru.otus.HibernateMain'
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
     }
 }
-
-tasks.build.dependsOn tasks.shadowJar
