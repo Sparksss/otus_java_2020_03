@@ -7,8 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "phones")
 public class PhoneDataSet {
     @Id
-    @GenericGenerator(name = "phone_generator", strategy = "increment")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_phone", nullable = false)
     private long id;
 

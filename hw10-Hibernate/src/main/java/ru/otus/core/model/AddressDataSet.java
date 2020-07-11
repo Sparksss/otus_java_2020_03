@@ -15,8 +15,7 @@ public class AddressDataSet {
     }
 
     @Id
-    @GenericGenerator(name = "address_generator", strategy = "increment")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_address")
     private long id;
 

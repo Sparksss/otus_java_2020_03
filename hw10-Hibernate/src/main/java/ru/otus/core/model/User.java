@@ -10,8 +10,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @GenericGenerator(name = "phones_generator", strategy = "increment")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -34,6 +33,12 @@ public class User {
         this.address = new AddressDataSet(street);
         this.phones = phones;
         phones.stream().forEach(p -> p.setUser(this));
+    }
+
+    public User(String name, String street) {
+        this.name = name;
+        this.address = new AddressDataSet(street);
+        this.phones = null;
     }
 
     public long getId() {
@@ -62,6 +67,13 @@ public class User {
 
     public List<PhoneDataSet> getPhones() {
         return this.phones;
+    }
+
+    public void setPhones(List<PhoneDataSet> phones) {
+        this.phones = phones;
+        for(PhoneDataSet p : this.phones) {
+            p.setUser(this);
+        }
     }
 
     @Override
