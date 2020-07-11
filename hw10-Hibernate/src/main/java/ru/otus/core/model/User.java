@@ -29,8 +29,7 @@ public class User {
     public User() {
     }
 
-    public User(long id, String name, String street, List<PhoneDataSet> phones) {
-        this.id = id;
+    public User(String name, String street, List<PhoneDataSet> phones) {
         this.name = name;
         this.address = new AddressDataSet(street);
         this.phones = phones;
@@ -64,14 +63,6 @@ public class User {
     public List<PhoneDataSet> getPhones() {
         return this.phones;
     }
-
-//    public void setPhoneNumber(String oldNumber, String newNumber) {
-//        for(PhoneDataSet phone : this.phones) {
-//            if(phone.getNumber().equals(oldNumber)) {
-//                phone.setNumber(newNumber);
-//            }
-//        }
-//    }
 
     @Override
     public String toString() {

@@ -32,14 +32,34 @@ public class HibernateMain {
         List<PhoneDataSet> phones = new ArrayList<>();
         PhoneDataSet pds = new PhoneDataSet("+13698541");
         phones.add(pds);
-        long id = dbServiceUser.saveUser(new User(0, "Вася", "Time square 543/12", phones));
+        User user = new User("Vasya", "Time square 543/12", phones);
+
+        long id = dbServiceUser.saveUser(user);
         Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
 
-//        id = dbServiceUser.saveUser(new User(1L, "А! Нет. Это же совсем не Вася"));
-//        Optional<User> mayBeUpdatedUser = dbServiceUser.getUser(id);
-
         outputUserOptional("Created user", mayBeCreatedUser);
-//        outputUserOptional("Updated user", mayBeUpdatedUser);
+
+        user.setName("John");
+
+        dbServiceUser.saveUser(user);
+
+        Optional<User> mayBeUpdatedUser = dbServiceUser.getUser(id);
+        outputUserOptional("Updated user", mayBeUpdatedUser);
+
+
+        List<PhoneDataSet> phones2 = new ArrayList<>();
+        PhoneDataSet pds2 = new PhoneDataSet("+79151711514");
+        PhoneDataSet pds3 = new PhoneDataSet("+4587963217");
+        phones2.add(pds2);
+        phones2.add(pds3);
+
+        User user1 = new User("Jimmy", "Walker st 157", phones2);
+
+        long id1 = dbServiceUser.saveUser(user1);
+
+        Optional<User> mayBeCreatedUser1 = dbServiceUser.getUser(id1);
+
+        outputUserOptional("Created user", mayBeCreatedUser1);
     }
 
     private static void outputUserOptional(String header, Optional<User> mayBeUser) {
