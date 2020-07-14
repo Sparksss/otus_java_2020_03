@@ -1,7 +1,5 @@
 package ru.otus.core.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -28,16 +26,16 @@ public class User {
     public User() {
     }
 
-    public User(String name, String street, List<PhoneDataSet> phones) {
+    public User(String name, AddressDataSet address, List<PhoneDataSet> phones) {
         this.name = name;
-        this.address = new AddressDataSet(street);
+        this.address = address;
         this.phones = phones;
         phones.stream().forEach(p -> p.setUser(this));
     }
 
-    public User(String name, String street) {
+    public User(String name, AddressDataSet address) {
         this.name = name;
-        this.address = new AddressDataSet(street);
+        this.address = address;
         this.phones = null;
     }
 
@@ -57,12 +55,13 @@ public class User {
         this.name = name;
     }
 
-    public String getStreet() {
-        return address.getStreet();
+
+    public AddressDataSet getAddress() {
+        return this.address;
     }
 
-    public void setAddress(String street) {
-        this.address.setStreet(street);
+    public void setAddress(AddressDataSet address) {
+        this.address = address;
     }
 
     public List<PhoneDataSet> getPhones() {
@@ -86,7 +85,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", street' " + address.getStreet() +
+                ", street' " + this.address.getStreet() +
                 ", phones' " + s.toString() +
                 '}';
     }

@@ -32,7 +32,8 @@ public class HibernateMain {
         List<PhoneDataSet> phones = new ArrayList<>();
         PhoneDataSet pds = new PhoneDataSet("+13698541");
         phones.add(pds);
-        User user = new User("Vasya", "Time square 543/12", phones);
+        AddressDataSet address = new AddressDataSet("Time square 543/12");
+        User user = new User("Vasya", address, phones);
 
         long id = dbServiceUser.saveUser(user);
         Optional<User> mayBeCreatedUser = dbServiceUser.getUser(id);
@@ -53,7 +54,8 @@ public class HibernateMain {
         phones2.add(pds2);
         phones2.add(pds3);
 
-        User user1 = new User("Jimmy", "Walker st 157", phones2);
+        AddressDataSet address1 = new AddressDataSet("Walker st 157");
+        User user1 = new User("Jimmy", address1, phones2);
 
         long id1 = dbServiceUser.saveUser(user1);
 

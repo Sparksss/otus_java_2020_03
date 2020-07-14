@@ -26,14 +26,14 @@ public class DBServiceTest {
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
         final String name = "Donald";
-        final String address = "Fantastic st 42";
+        final AddressDataSet address = new AddressDataSet("Fantastic st 42");
 
         User user = new User(name, address);
         long id = dbServiceUser.saveUser(user);
-        Optional<User> findedUser = dbServiceUser.getUser(id);
-        User createdUser = findedUser.get();
+        Optional<User> finedUser = dbServiceUser.getUser(id);
+        User createdUser = finedUser.get();
         Assertions.assertEquals(name, createdUser.getName());
-        Assertions.assertEquals(address, createdUser.getStreet());
+        Assertions.assertEquals(address.getStreet(), createdUser.getAddress().getStreet());
     }
 
     @Test
@@ -42,18 +42,19 @@ public class DBServiceTest {
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
         final String name = "Jimmy";
-        final String address = "Amazing st 42";
+        final AddressDataSet address = new AddressDataSet("Amazing st 42");
         final String phone = "+73657894123";
 
         List<PhoneDataSet> phones = new ArrayList<>();
         PhoneDataSet pds = new PhoneDataSet(phone);
         phones.add(pds);
+
         User user = new User(name, address, phones);
         long id = dbServiceUser.saveUser(user);
         Optional<User> finedUser = dbServiceUser.getUser(id);
         User createdUser = finedUser.get();
         Assertions.assertEquals(name, createdUser.getName());
-        Assertions.assertEquals(address, createdUser.getStreet());
+        Assertions.assertEquals(address.getStreet(), createdUser.getAddress().getStreet());
         String phoneCreatedUser = createdUser.getPhones().get(0).getNumber();
         Assertions.assertEquals(phone, phoneCreatedUser);
     }
@@ -65,7 +66,7 @@ public class DBServiceTest {
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
         final String name = "Jimmy";
-        final String address = "Amazing st 42";
+        final AddressDataSet address = new AddressDataSet("Amazing st 42");
         final String phone = "+73657894123";
 
         List<PhoneDataSet> phones = new ArrayList<>();
@@ -79,7 +80,7 @@ public class DBServiceTest {
         oldPhone.setNumber("+77777777777");
         dbServiceUser.saveUser(createdUser);
         Assertions.assertEquals(name, createdUser.getName());
-        Assertions.assertEquals(address, createdUser.getStreet());
+        Assertions.assertEquals(address.getStreet(), createdUser.getAddress().getStreet());
         String phoneCreatedUser = createdUser.getPhones().get(0).getNumber();
         Assertions.assertNotEquals(phone, phoneCreatedUser);
     }
