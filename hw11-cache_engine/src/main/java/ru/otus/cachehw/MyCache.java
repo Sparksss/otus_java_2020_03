@@ -1,67 +1,67 @@
 package ru.otus.cachehw;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final Map<K, V> weakHashMap;
+    private final Map<K, V> weakHashMap = new WeakHashMap<>();
 
-    private final Map<String, HwListener<K, V>> listeners;
+    private final List<WeakReference<HwListener<K, V>>> listeners = new ArrayList<>();
 
-    private MyCache() {
-        this.weakHashMap = new WeakHashMap<>();
-        this.listeners = new HashMap<>();
-    }
-
-    private MyCache(int count) {
-        this.weakHashMap = new WeakHashMap<>(count);
-        this.listeners = new HashMap<>();
-    }
-
-    static MyCache getInstance() {
-        return new MyCache<>();
-    }
-
-    static MyCache getInstance(int count) {
-        return new MyCache<>(count);
-    }
+    private ReferenceQueue<HwListener<K, V>> listenerReferenceQueue = new ReferenceQueue<>();
 
     @Override
     public void put(K key, V value) {
+        this.clearRemovedObjects();
+        if(this.weakHashMap.containsKey(key)) {
+            this.notifyAllListeners(key, value, "UPDATE");
+        } else {
+            this.notifyAllListeners(key, value, "CREATE");
+        }
         this.weakHashMap.put(key, value);
-        if(this.listeners.containsKey("CREATE")) {
-            HwListener<K,V> handler = this.listeners.get("CREATE");
-            handler.notify(key, value, "CREATE");
-        }
-    }
 
-    @Override
-    public void remove(K key) {
-        V value = this.weakHashMap.remove(key);
-        if(this.listeners.containsKey("DELETE")) {
-            HwListener<K,V> handler = this.listeners.get("DELETE");
-            handler.notify(key, value, "DELETE");
-        }
     }
 
     @Override
     public V get(K key) {
+        this.clearRemovedObjects();
         V value = this.weakHashMap.get(key);
-        if(this.listeners.containsKey("READ")) {
-            HwListener<K,V> handler = this.listeners.get("READ");
-            handler.notify(key, value, "READ");
-        }
+        this.notifyAllListeners(key, value, "READ");
         return value;
     }
 
     @Override
+    public void remove(K key) {
+        this.clearRemovedObjects();
+        V value = this.weakHashMap.remove(key);
+        this.notifyAllListeners(key, value, "DELETE");
+
+    }
+
+    @Override
     public void addListener(HwListener<K, V> listener) {
+        this.listeners.add(new WeakReference<HwListener<K, V>>(listener, this.listenerReferenceQueue));
     }
 
     @Override
     public void removeListener(HwListener<K, V> listener) {
-        this.listeners.remove(listener);
+        if(listener != null) this.listeners.remove(listener);
+    }
+
+    private void clearRemovedObjects() {
+        WeakReference listenerWeakRef = (WeakReference) listenerReferenceQueue.poll();
+        while (listenerWeakRef != null) {
+            listeners.remove(listenerWeakRef);
+            listenerWeakRef = (WeakReference) listenerReferenceQueue.poll();
+        }
+    }
+
+    private void notifyAllListeners(K key, V value, String action) {
+        for(WeakReference wr : this.listeners) {
+            HwListener<K, V> handler =(HwListener<K, V>) wr.get();
+            handler.notify(key, value, action);
+        }
     }
 }

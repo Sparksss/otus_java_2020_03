@@ -1,6 +1,10 @@
 package ru.otus;
 
 import org.hibernate.SessionFactory;
+import ru.otus.cachehw.HWCacheDemo;
+import ru.otus.cachehw.HwCache;
+import ru.otus.cachehw.HwListener;
+import ru.otus.cachehw.MyCache;
 import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.AddressDataSet;
 import ru.otus.core.model.PhoneDataSet;
@@ -10,16 +14,24 @@ import ru.otus.core.service.DbServiceUserImpl;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.time.Instant;
+
 
 
 public class myCacheMain {
+    private static final Logger logger = LoggerFactory.getLogger(HWCacheDemo.class);
+
     public static void main(String[] args) {
+
+        List<PhoneDataSet> phones = new ArrayList<>();
+        PhoneDataSet pds = new PhoneDataSet("+13698541");
+        phones.add(pds);
+        AddressDataSet address = new AddressDataSet("Time square 543/12");
+        User user = new User("Vasya", address, phones);
 
         long start = System.currentTimeMillis();
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class, AddressDataSet.class, PhoneDataSet.class);
@@ -28,27 +40,30 @@ public class myCacheMain {
         UserDao userDao = new UserDaoHibernate(sessionManager);
         DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
 
-        List<PhoneDataSet> phones = new ArrayList<>();
-        PhoneDataSet pds = new PhoneDataSet("+13698541");
-        phones.add(pds);
-        AddressDataSet address = new AddressDataSet("Time square 543/12");
-        User user = new User("Vasya", address, phones);
-
         long id = dbServiceUser.saveUser(user);
 
         long end = System.currentTimeMillis();
-        System.out.println(end - start);
+        logger.info("time has passed after add user in DB, : " + (end - start));
 
 
-//        Map<String, Object> week = new WeakHashMap<>();
-//        for(int i = 0; i < 100; i++) {
-//            week.put(" " + i, "lfmekfmlewmfe");
-//        }
+        start = System.currentTimeMillis();
+        HwCache<Integer, User> cache = new MyCache<>();
 
-//        week.remove(" " + 9);
-//        for(int i = 0; i < week.size(); i++) {
-//            System.out.println(i);
-//            System.out.println(week.get(" " + i));
-//        }
+        HwListener<Integer, User> listener = new HwListener<Integer, User>() {
+            @Override
+            public void notify(Integer key, User value, String action) {
+                logger.info("key:{}, value:{}, action: {}", key, value, action);
+            }
+        };
+
+        cache.addListener(listener);
+        cache.put(1, user);
+
+        logger.info("getValue:{}", cache.get(1));
+        cache.remove(1);
+        cache.removeListener(listener);
+        end = System.currentTimeMillis();
+
+        logger.info("time has passed after add user in Cache : " + (end - start));
     }
 }
