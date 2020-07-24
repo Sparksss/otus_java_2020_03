@@ -1,5 +1,8 @@
 package ru.otus.cachehw;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.ref.ReferenceQueue;
 import java.util.*;
 
@@ -10,6 +13,8 @@ public class MyCache<K, V> implements HwCache<K, V> {
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     private ReferenceQueue<HwListener<K, V>> listenerReferenceQueue = new ReferenceQueue<>();
+
+    private static final Logger logger = LoggerFactory.getLogger(HWCacheDemo.class);
 
     @Override
     public void put(K key, V value) {
@@ -52,7 +57,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
             try {
                 handler.notify(key, value, action);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                logger.error(e.getMessage());
             }
 
         }
