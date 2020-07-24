@@ -49,7 +49,12 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private void notifyAllListeners(K key, V value, String action) {
         for(HwListener<K, V> handler: this.listeners) {
-            handler.notify(key, value, action);
+            try {
+                handler.notify(key, value, action);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
         }
     }
 }
