@@ -47,20 +47,20 @@ public class myCacheMain {
 
 
         start = System.currentTimeMillis();
-        HwCache<Integer, User> cache = new MyCache<>();
+        HwCache<String, User> cache = new MyCache<>();
 
-        HwListener<Integer, User> listener = new HwListener<Integer, User>() {
+        HwListener<String, User> listener = new HwListener<String, User>() {
             @Override
-            public void notify(Integer key, User value, String action) {
+            public void notify(String key, User value, String action) {
                 logger.info("key:{}, value:{}, action: {}", key, value, action);
             }
         };
 
         cache.addListener(listener);
-        cache.put(1, user);
+        cache.put("" + 1, user);
 
-        logger.info("getValue:{}", cache.get(1));
-        cache.remove(1);
+        logger.info("getValue:{}", cache.get("" + 1));
+        cache.remove("" + 1);
         cache.removeListener(listener);
         end = System.currentTimeMillis();
 
