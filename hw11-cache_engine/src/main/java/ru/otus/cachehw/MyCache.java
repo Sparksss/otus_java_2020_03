@@ -14,7 +14,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private ReferenceQueue<HwListener<K, V>> listenerReferenceQueue = new ReferenceQueue<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(HWCacheDemo.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
 
     @Override
     public void put(K key, V value) {
