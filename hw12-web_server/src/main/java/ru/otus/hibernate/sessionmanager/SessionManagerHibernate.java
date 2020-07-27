@@ -92,4 +92,9 @@ public class SessionManagerHibernate implements SessionManager {
             throw new SessionManagerException("Transaction not opened ");
         }
     }
+
+    @Override
+    public Session getSession() {
+        return this.sessionFactory.openSession();
+    }
 }

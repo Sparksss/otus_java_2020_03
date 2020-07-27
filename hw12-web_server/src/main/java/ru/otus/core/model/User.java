@@ -1,7 +1,6 @@
 package ru.otus.core.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,28 +14,24 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_address")
-    private AddressDataSet address;
+    @Column(name = "login", unique = true)
+    private String login;
 
+    @Column(name = "password")
+    private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<PhoneDataSet> phones;
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "role")
+    private String role;
 
     public User() {
     }
 
-    public User(String name, AddressDataSet address, List<PhoneDataSet> phones) {
-        this.name = name;
-        this.address = address;
-        this.phones = phones;
-        phones.stream().forEach(p -> p.setUser(this));
-    }
-
-    public User(String name, AddressDataSet address) {
-        this.name = name;
-        this.address = address;
-        this.phones = null;
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
     public long getId() {
@@ -55,38 +50,46 @@ public class User {
         this.name = name;
     }
 
-
-    public AddressDataSet getAddress() {
+    public String getAddress() {
         return this.address;
     }
 
-    public void setAddress(AddressDataSet address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public List<PhoneDataSet> getPhones() {
-        return this.phones;
+    public String getLogin() {
+        return login;
     }
 
-    public void setPhones(List<PhoneDataSet> phones) {
-        this.phones = phones;
-        for(PhoneDataSet p : this.phones) {
-            p.setUser(this);
-        }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        for(PhoneDataSet phone : this.phones) {
-            s.append(phone.getNumber() + " ");
-        }
-
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", street' " + this.address.getStreet() +
-                ", phones' " + s.toString() +
+                ", street' " + this.address +
+                ", login' " + this.login +
+                ", password' " + this.password +
                 '}';
     }
 }

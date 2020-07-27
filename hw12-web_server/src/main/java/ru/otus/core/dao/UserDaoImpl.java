@@ -1,31 +1,24 @@
-package ru.otus.hibernate.dao;
-
+package ru.otus.core.dao;
 
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.core.dao.UserDao;
-import ru.otus.core.dao.UserDaoException;
 import ru.otus.core.model.User;
 import ru.otus.core.sessionmanager.SessionManager;
+import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
 import java.util.Optional;
 
-public class UserDaoHibernate implements UserDao {
+public class UserDaoImpl implements UserDao {
+
     private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
     private final SessionManagerHibernate sessionManager;
 
-    public UserDaoHibernate(SessionManagerHibernate sessionManager) {
+    public UserDaoImpl(SessionManagerHibernate sessionManager) {
         this.sessionManager = sessionManager;
-    }
-
-
-    @Override
-    public Optional<User> findByLogin(String login) {
-        return Optional.empty();
     }
 
     @Override
@@ -33,6 +26,17 @@ public class UserDaoHibernate implements UserDao {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
             return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, id));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findByLogin(String login) {
+        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        try {
+            return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, login));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -82,9 +86,8 @@ public class UserDaoHibernate implements UserDao {
         }
     }
 
-
     @Override
     public SessionManager getSessionManager() {
-        return sessionManager;
+        return this.sessionManager;
     }
 }
