@@ -64,7 +64,6 @@
             let element;
             for(let i = 0; i < inp.length; i++) {
                 element = inp[i];
-                // if(element.value.length < 1) return;
                 data[element.name] = element.value;
             }
             let response = await window.fetch(f.action,  {
