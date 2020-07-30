@@ -13,7 +13,7 @@
 <body>
 <div class="create_user">
     <h4>Создать нового пользователя</h4>
-    <form action="/create" method="post">
+    <form action="/users" method="post">
         <label for="name">Имя пользователя</label>
         <input type="text" id="name" name="name" required>
         <label for="login">Логин</label>
@@ -21,7 +21,9 @@
         <label for="password">Пароль</label>
         <input type="text" id="password" name="password" required>
         <label for="address">Адрес</label>
-        <input type="text" name="address" id="address" required>
+        <input type="text" id="address" name="address" required>
+        <label for="role">Роль</label>
+        <input type="text" id="role" name="role" required>
         <button class="send_button" type="submit">Создать</button>
     </form>
 </div>
@@ -34,9 +36,11 @@
             <td>Имя</td>
             <td>Логин</td>
             <td>Пароль</td>
+            <td>Адрес</td>
+            <td>Роль</td>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="users_list">
         <#list users as user>
         <tr>
             <td>${user.id}</td>
@@ -44,10 +48,56 @@
             <td>${user.login}</td>
             <td>${user.password}</td>
             <td>${user.address}</td>
+            <td>${user.role}</td>
         </tr>
         </#list>
         </tbody>
     </table>
+
+    <script>
+        const f = document.forms[0];
+        f.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const inp = f.querySelectorAll('input');
+            const data = {
+                name: '',
+                login: '',
+                password: '',
+                address: '',
+                role: ''
+            };
+            let element;
+            for(let i = 0; i < inp.length; i++) {
+                element = inp[i];
+                // if(element.value.length < 1) return;
+                data[element.name] = element.value;
+            }
+            let response = await window.fetch(f.action,  {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(data)
+            });
+            if(response.status === 200) {
+                let user = await response.json();
+                insertNewUser(user);
+                f.reset();
+            }
+        });
+
+        function insertNewUser(user) {
+            const usersList = document.getElementById("users_list");
+            const tr = document.createElement("tr");
+            for(let fieldName in user) {
+                let td = document.createElement("td");
+                td.textContent = user[fieldName];
+                tr.insertBefore(td, null);
+            }
+            usersList.insertBefore(tr, null);
+        }
+
+    </script>
 </div>
 </body>
 </html>

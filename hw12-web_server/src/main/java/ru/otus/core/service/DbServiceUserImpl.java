@@ -5,13 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.User;
-import ru.otus.core.sessionmanager.DatabaseSession;
 import ru.otus.core.sessionmanager.SessionManager;
-import ru.otus.hibernate.HibernateUtils;
-import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,19 +56,16 @@ public class DbServiceUserImpl implements DBServiceUser {
     }
 
     @Override
-    public Optional<User> getUserByLogin(String login) {
-        try (SessionManager sessionManager = userDao.getSessionManager()) {
-            sessionManager.beginSession();
-            try {
-                Optional<User> userOptional = userDao.findByLogin(login);
-                logger.info("user: {}", userOptional.orElse(null));
-                return userOptional;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                sessionManager.rollbackSession();
-            }
-            return Optional.empty();
+    public User getUserByLogin(String login) {
+        User user = null;
+        try {
+            SessionManager currentSession = userDao.getSessionManager();
+            Session session = currentSession.getSession();
+//            users = session.createNativeQuery("SELECT * FROM users WHERE ", User.class).getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
+        return user;
     }
 
     @Override

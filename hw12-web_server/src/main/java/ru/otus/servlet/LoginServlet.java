@@ -15,10 +15,11 @@ import static javax.servlet.http.HttpServletResponse.*;
 
 public class LoginServlet extends HttpServlet {
 
-    private static final String PARAM_LOGIN = "login";
-    private static final String PARAM_PASSWORD = "password";
+    private static final String LOGIN_FIELD = "login";
+    private static final String PASSWORD_FIELD = "password";
     private static final int MAX_INACTIVE_INTERVAL = 30;
     private static final String LOGIN_PAGE_TEMPLATE = "login.html";
+
 
 
     private final TemplateProcessor templateProcessor;
@@ -37,8 +38,8 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter(PARAM_LOGIN);
-        String password = request.getParameter(PARAM_PASSWORD);
+        String name = request.getParameter(LOGIN_FIELD);
+        String password = request.getParameter(PASSWORD_FIELD);
 
         if (userAuthService.authenticate(name, password)) {
             HttpSession session = request.getSession();
@@ -46,6 +47,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("/users");
         } else {
             response.setStatus(SC_UNAUTHORIZED);
+            response.sendRedirect("/login");
         }
 
     }
