@@ -9,7 +9,8 @@ import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.AddressDataSet;
 import ru.otus.core.model.PhoneDataSet;
 import ru.otus.core.model.User;
-import ru.otus.core.wrapperuser.WrapperUser;
+import ru.otus.core.service.DBServiceUser;
+import ru.otus.core.service.CachedDBServiceUser;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
@@ -34,22 +35,22 @@ public class myCacheMain {
 
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class, AddressDataSet.class, PhoneDataSet.class);
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
-        HwCache<String, User> cache = new MyCache();
+        HwCache<Long, User> cache = new MyCache();
 
         UserDao userDao = new UserDaoHibernate(sessionManager);
-        WrapperUser wrapperUser = new WrapperUser(userDao);
+        DBServiceUser cachedDBServiceUser = new CachedDBServiceUser(userDao, cache);
 
-        HwListener<String, User> listener = new HwListener<String, User>() {
+        HwListener<Long, User> listener = new HwListener<Long, User>() {
             @Override
-            public void notify(String key, User value, String action) {
+            public void notify(Long key, User value, String action) {
                 logger.info("key:{}, value:{}, action: {}", key, value, action);
             }
         };
 
 
-        wrapperUser.addListenerToCache(listener);
+        cachedDBServiceUser.addListenerToCache(listener);
 
-        long id = wrapperUser.saveUser(user);
-        User user1 = wrapperUser.getUserById(id);
+        long id = cachedDBServiceUser.saveUser(user);
+        User user1 = cachedDBServiceUser.getUser(id).get();
     }
 }
