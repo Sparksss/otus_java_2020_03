@@ -30,7 +30,7 @@ public class CachedDBServiceUser implements DBServiceUser {
                 userDao.insertOrUpdate(user);
                 long userId = user.getId();
                 sessionManager.commitSession();
-                cache.put(userId, user);
+                cache.put(Long.toString(userId), user);
                 logger.info("created user: {}", userId);
                 return userId;
             } catch (Exception e) {
@@ -44,8 +44,8 @@ public class CachedDBServiceUser implements DBServiceUser {
 
     @Override
     public Optional<User> getUser(long id) {
-        Optional<User> value = Optional.ofNullable((User) cache.get(id));
-        if(value == null) {
+        Optional<User> value = Optional.ofNullable((User) cache.get(Long.toString(id)));
+        if(value.isEmpty()) {
             try (SessionManager sessionManager = userDao.getSessionManager()) {
                 sessionManager.beginSession();
                 try {

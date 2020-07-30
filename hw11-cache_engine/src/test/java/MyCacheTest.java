@@ -8,16 +8,15 @@ import ru.otus.cachehw.MyCache;
 public class MyCacheTest {
     @Test
     public void testCleanCacheAfterRunGC() throws InterruptedException {
-        HwCache<Long, Integer> cache = new MyCache<>();
+        HwCache<String, Integer> cache = new MyCache<>();
         for (int i = 0; i < 10000; i++) {
-            long l = i;
-            cache.put(l, i);
+            cache.put(Integer.toString(i), i);
         }
         System.gc();
         Thread.sleep(200);
         int cacheSize = 0;
-        for (long i = 0; i < 10000; i++) {
-            Integer intFromCache = cache.get(i);
+        for (int i = 0; i < 10000; i++) {
+            Integer intFromCache = cache.get(Integer.toString(i));
             if (intFromCache != null) {
                 cacheSize++;
             }

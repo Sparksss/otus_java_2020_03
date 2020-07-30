@@ -35,14 +35,14 @@ public class MyCacheMain {
 
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class, AddressDataSet.class, PhoneDataSet.class);
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
-        HwCache<Long, User> cache = new MyCache();
+        HwCache<String, User> cache = new MyCache<String, User>();
 
         UserDao userDao = new UserDaoHibernate(sessionManager);
         DBServiceUser cachedDBServiceUser = new CachedDBServiceUser(userDao, cache);
 
-        HwListener<Long, User> listener = new HwListener<Long, User>() {
+        HwListener<String, User> listener = new HwListener<String, User>() {
             @Override
-            public void notify(Long key, User value, String action) {
+            public void notify(String key, User value, String action) {
                 logger.info("key:{}, value:{}, action: {}", key, value, action);
             }
         };
