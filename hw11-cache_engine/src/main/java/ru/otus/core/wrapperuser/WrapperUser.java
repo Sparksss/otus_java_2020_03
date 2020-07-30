@@ -13,7 +13,7 @@ import ru.otus.core.service.DbServiceUserImpl;
 public class WrapperUser {
     private final DBServiceUser dbServiceUser;
 
-    private HwCache<String, User> cache = new MyCache<>();
+    private final HwCache<String, User> cache = new MyCache<>();
 
     public WrapperUser(UserDao userDao) {
         dbServiceUser = new DbServiceUserImpl(userDao);
