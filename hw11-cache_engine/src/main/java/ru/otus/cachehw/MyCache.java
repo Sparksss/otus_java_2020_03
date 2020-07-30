@@ -3,7 +3,6 @@ package ru.otus.cachehw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.ref.ReferenceQueue;
 import java.util.*;
 
 public class MyCache<K, V> implements HwCache<K, V> {
