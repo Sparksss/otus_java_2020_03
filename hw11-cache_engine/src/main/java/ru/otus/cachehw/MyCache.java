@@ -12,8 +12,6 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
-    private ReferenceQueue<HwListener<K, V>> listenerReferenceQueue = new ReferenceQueue<>();
-
     private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
 
     @Override
