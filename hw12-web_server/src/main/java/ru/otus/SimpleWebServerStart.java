@@ -28,8 +28,6 @@ import ru.otus.services.TemplateProcessorImpl;
     // Страница пользователей
     http://localhost:8080/users
 
-    // REST сервис
-    http://localhost:8080/api/user/3
 */
 public class SimpleWebServerStart {
     private static final String TEMPLATES_DIR = "/templates/";
