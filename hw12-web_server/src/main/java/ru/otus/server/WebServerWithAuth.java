@@ -54,7 +54,6 @@ public class WebServerWithAuth implements UsersWebServer {
         resourceHandler.setWelcomeFiles(new String[]{START_PAGE_NAME});
         resourceHandler.setResourceBase(FileSystemHelper.localFileNameOrResourceNameToFullPath(COMMON_RESOURCES_DIR));
 
-        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handlers.addHandler(resourceHandler);
         handlers.addHandler(this.securityHandler("/users"));
 
