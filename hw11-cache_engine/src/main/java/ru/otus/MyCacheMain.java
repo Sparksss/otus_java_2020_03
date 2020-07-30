@@ -22,7 +22,7 @@ import java.util.List;
 
 
 
-public class myCacheMain {
+public class MyCacheMain {
     private static final Logger logger = LoggerFactory.getLogger(HWCacheDemo.class);
 
     public static void main(String[] args) {
