@@ -22,8 +22,6 @@
         <input type="text" id="password" name="password" required>
         <label for="address">Адрес</label>
         <input type="text" id="address" name="address" required>
-        <label for="role">Роль</label>
-        <input type="text" id="role" name="role" required>
         <button class="send_button" type="submit">Создать</button>
     </form>
 </div>
@@ -37,7 +35,6 @@
             <td>Логин</td>
             <td>Пароль</td>
             <td>Адрес</td>
-            <td>Роль</td>
         </tr>
         </thead>
         <tbody id="users_list">
@@ -48,7 +45,6 @@
             <td>${user.login}</td>
             <td>${user.password}</td>
             <td>${user.address}</td>
-            <td>${user.role}</td>
         </tr>
         </#list>
         </tbody>
@@ -63,8 +59,7 @@
                 name: '',
                 login: '',
                 password: '',
-                address: '',
-                role: ''
+                address: ''
             };
             let element;
             for(let i = 0; i < inp.length; i++) {

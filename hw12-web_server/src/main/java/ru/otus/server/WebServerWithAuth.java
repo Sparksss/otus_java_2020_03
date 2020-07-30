@@ -15,8 +15,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import ru.otus.core.service.DBServiceUser;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.TemplateProcessor;
-import ru.otus.services.UserAuthService;
-import ru.otus.servlet.LoginServlet;
 import ru.otus.servlet.UsersServlet;
 
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ public class WebServerWithAuth implements UsersWebServer {
 
     private static final String START_PAGE_NAME = "index.html";
     private static final String CONSTRAINT_NAME = "auth";
-    private static final String ROLE_NAME_USER = "user";
     private static final String ROLE_NAME_ADMIN = "admin";
     private static final String COMMON_RESOURCES_DIR = "static";
     private static final int WEB_SERVER_PORT = 8080;
@@ -36,19 +33,16 @@ public class WebServerWithAuth implements UsersWebServer {
     private final Server server;
     private final LoginService loginService;
     private final DBServiceUser dbServiceUser;
-    private final UserAuthService userAuthService;
     private final Gson gson;
 
     public WebServerWithAuth(TemplateProcessor templateProcessor,
                              LoginService loginService,
                              DBServiceUser dbServiceUser,
-                             UserAuthService userAuthService,
                              Gson gson) {
         this.templateProcessor = templateProcessor;
         this.server = new Server(WEB_SERVER_PORT);;
         this.loginService = loginService;
         this.dbServiceUser = dbServiceUser;
-        this.userAuthService = userAuthService;
         this.gson = gson;
     }
 
@@ -61,7 +55,6 @@ public class WebServerWithAuth implements UsersWebServer {
         resourceHandler.setResourceBase(FileSystemHelper.localFileNameOrResourceNameToFullPath(COMMON_RESOURCES_DIR));
 
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(this.templateProcessor, userAuthService)), "/login");
         handlers.addHandler(resourceHandler);
         handlers.addHandler(this.securityHandler("/users"));
 
@@ -72,7 +65,7 @@ public class WebServerWithAuth implements UsersWebServer {
         Constraint constraint = new Constraint();
         constraint.setName(CONSTRAINT_NAME);
         constraint.setAuthenticate(true);
-        constraint.setRoles(new String[]{ROLE_NAME_USER, ROLE_NAME_ADMIN});
+        constraint.setRoles(new String[]{ROLE_NAME_ADMIN});
 
         List<ConstraintMapping> constraintMappings = new ArrayList<>();
         Arrays.stream(paths).forEachOrdered(path -> {
