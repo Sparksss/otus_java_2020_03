@@ -12,9 +12,9 @@ import java.util.Optional;
 public class CachedDBServiceUser implements DBServiceUser {
 
     private final UserDao userDao;
-    private final HwCache cache;
+    private final HwCache<String, User> cache;
 
-    public CachedDBServiceUser(UserDao userDao, HwCache cache) {
+    public CachedDBServiceUser(UserDao userDao, HwCache<String, User> cache) {
         this.userDao = userDao;
         this.cache = cache;
     }
