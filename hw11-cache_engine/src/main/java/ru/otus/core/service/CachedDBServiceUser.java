@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public class CachedDBServiceUser implements DBServiceUser {
 
-    private final UserDao userDao;
+    private final DBServiceUser dbServiceUser;
     private final HwCache<String, User> cache;
 
     public CachedDBServiceUser(UserDao userDao, HwCache<String, User> cache) {
-        this.userDao = userDao;
+        this.dbServiceUser = new DbServiceUserImpl(userDao);
         this.cache = cache;
     }
 
@@ -23,39 +23,18 @@ public class CachedDBServiceUser implements DBServiceUser {
 
     @Override
     public long saveUser(User user) {
-        try (SessionManager sessionManager = userDao.getSessionManager()) {
-            sessionManager.beginSession();
-            try {
-                userDao.insertOrUpdate(user);
-                long userId = user.getId();
-                sessionManager.commitSession();
-                cache.put(Long.toString(userId), user);
-                logger.info("created user: {}", userId);
-                return userId;
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                sessionManager.rollbackSession();
-                throw new DbServiceException(e);
-            }
-        }
+        long userId = this.dbServiceUser.saveUser(user);
+        cache.put(Long.toString(userId), user);
+        logger.info("created user: {}", userId);
+        return userId;
     }
 
 
     @Override
     public Optional<User> getUser(long id) {
-        Optional<User> value = Optional.ofNullable((User) cache.get(Long.toString(id)));
+        Optional<User> value = Optional.ofNullable(cache.get(Long.toString(id)));
         if(value.isEmpty()) {
-            try (SessionManager sessionManager = userDao.getSessionManager()) {
-                sessionManager.beginSession();
-                try {
-                    Optional<User> userOptional = userDao.findById(id);
-                    logger.info("user: {}", userOptional.orElse(null));
-                    return userOptional;
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    sessionManager.rollbackSession();
-                }
-            }
+           value = this.dbServiceUser.getUser(id);
         }
         return value;
     }
