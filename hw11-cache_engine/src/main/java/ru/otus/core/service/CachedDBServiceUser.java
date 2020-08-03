@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.otus.cachehw.HwCache;
 import ru.otus.core.dao.UserDao;
 import ru.otus.core.model.User;
-import ru.otus.core.sessionmanager.SessionManager;
-
 import java.util.Optional;
 
 public class CachedDBServiceUser implements DBServiceUser {
