@@ -1,6 +1,5 @@
 package ru.otus.core.service;
 
-import ru.otus.cachehw.HwListener;
 import ru.otus.core.model.User;
 
 import java.util.Optional;
@@ -11,5 +10,4 @@ public interface DBServiceUser {
 
     Optional<User> getUser(long id);
 
-    void addListenerToCache(HwListener listener);
 }

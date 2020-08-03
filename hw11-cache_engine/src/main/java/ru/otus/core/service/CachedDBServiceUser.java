@@ -60,8 +60,4 @@ public class CachedDBServiceUser implements DBServiceUser {
         }
         return value;
     }
-
-    public void addListenerToCache(HwListener listener) {
-        this.cache.addListener(listener);
-    }
 }

@@ -47,8 +47,7 @@ public class MyCacheMain {
             }
         };
 
-
-        cachedDBServiceUser.addListenerToCache(listener);
+        cache.addListener(listener);
 
         long id = cachedDBServiceUser.saveUser(user);
         User user1 = cachedDBServiceUser.getUser(id).get();
