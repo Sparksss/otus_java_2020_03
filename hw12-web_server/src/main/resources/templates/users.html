@@ -74,21 +74,28 @@
                 body: JSON.stringify(data)
             });
             if(response.status === 200) {
-                let user = await response.json();
-                insertNewUser(user);
+                let data = await response.json();
+                updateUsers(data);
                 f.reset();
             }
         });
 
-        function insertNewUser(user) {
+        function updateUsers(users) {
             const usersList = document.getElementById("users_list");
-            const tr = document.createElement("tr");
-            for(let fieldName in user) {
-                let td = document.createElement("td");
-                td.textContent = user[fieldName];
-                tr.insertBefore(td, null);
-            }
-            usersList.insertBefore(tr, null);
+            usersList.innerText = "";
+            console.log(users);
+            const fragment = new DocumentFragment();
+            let tr = null;
+            users.forEach((user) => {
+                tr = document.createElement("tr");
+                for(let fieldName in user) {
+                    let td = document.createElement("td");
+                    td.textContent = user[fieldName];
+                    tr.insertBefore(td, null);
+                }
+                fragment.appendChild(tr);
+            });
+            usersList.appendChild(fragment);
         }
 
     </script>

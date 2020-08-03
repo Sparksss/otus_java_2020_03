@@ -53,9 +53,10 @@ public class UsersServlet extends HttpServlet {
         String body = reader.lines().collect(Collectors.joining(System.lineSeparator()));
         User user = gson.fromJson(body, User.class);
         this.dbServiceUser.saveUser(user);
+        List<User> users = this.dbServiceUser.getAllUsers();
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
-        out.print(gson.toJson(user));
+        out.print(gson.toJson(users));
     }
 }
