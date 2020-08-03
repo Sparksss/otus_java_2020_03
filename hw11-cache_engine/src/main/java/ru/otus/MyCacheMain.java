@@ -35,7 +35,7 @@ public class MyCacheMain {
 
         SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class, AddressDataSet.class, PhoneDataSet.class);
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
-        HwCache<String, User> cache = new MyCache<String, User>();
+        HwCache<String, User> cache = new MyCache<>();
 
         UserDao userDao = new UserDaoHibernate(sessionManager);
         DBServiceUser cachedDBServiceUser = new CachedDBServiceUser(userDao, cache);
