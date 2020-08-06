@@ -11,6 +11,7 @@ import ru.otus.core.model.PhoneDataSet;
 import ru.otus.core.model.User;
 import ru.otus.core.service.DBServiceUser;
 import ru.otus.core.service.CachedDBServiceUser;
+import ru.otus.core.service.DbServiceUserImpl;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
@@ -38,7 +39,8 @@ public class MyCacheMain {
         HwCache<String, User> cache = new MyCache<>();
 
         UserDao userDao = new UserDaoHibernate(sessionManager);
-        DBServiceUser cachedDBServiceUser = new CachedDBServiceUser(userDao, cache);
+        DBServiceUser dbServiceUser = new DbServiceUserImpl(userDao);
+        DBServiceUser cachedDBServiceUser = new CachedDBServiceUser(dbServiceUser, cache);
 
         HwListener<String, User> listener = new HwListener<String, User>() {
             @Override
