@@ -8,4 +8,5 @@ public interface Versions {
     String jaxbApi = "2.3.1";
     String jetty = "9.4.27.v20200227";
     String freemarker = "2.3.28";
+    String reflections = "0.9.12";
 }
