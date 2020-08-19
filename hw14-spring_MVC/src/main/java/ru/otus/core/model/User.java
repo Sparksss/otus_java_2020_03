@@ -1,4 +1,4 @@
-package ru.otus.domain;
+package ru.otus.core.model;
 
 import javax.persistence.*;
 
@@ -22,18 +22,25 @@ public class User {
     }
 
     public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+        return this.id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' + '}';
     }
 }
