@@ -6,7 +6,7 @@ import ru.otus.core.sessionmanager.SessionManager;
 public interface UserDao {
     User findById(long id);
 
-    User findByName(String login);
+    User findByName(String name);
 
     long insertUser(User user);
 
