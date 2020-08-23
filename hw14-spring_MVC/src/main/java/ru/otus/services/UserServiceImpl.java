@@ -1,6 +1,6 @@
 package ru.otus.services;
 
-import ru.otus.model.User;
+import ru.otus.core.model.User;
 
 import java.util.List;
 
