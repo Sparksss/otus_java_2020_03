@@ -1,30 +1,29 @@
 package ru.otus.core.dao;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.model.User;
+import ru.otus.core.sessionmanager.DatabaseSession;
 import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.hibernate.dao.UserDaoHibernate;
-import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
-import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
+@RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
     private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
-    private final SessionManagerHibernate sessionManager;
-
-    public UserDaoImpl(SessionManagerHibernate sessionManager) {
-        this.sessionManager = sessionManager;
-    }
+    @Getter
+    private final SessionManager sessionManager;
 
     @Override
     public User findById(long id) {
         User user = null;
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        DatabaseSession currentSession = sessionManager.getCurrentSession();
         try {
-            user = currentSession.getHibernateSession().find(User.class, id);
+            user = currentSession.getSession().find(User.class, id);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -34,9 +33,9 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findByName(String login) {
         User user = null;
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        DatabaseSession currentSession = sessionManager.getCurrentSession();
         try {
-            user = currentSession.getHibernateSession().find(User.class, login);
+            user = currentSession.getSession().find(User.class, login);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -45,9 +44,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public long insertUser(User user) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        DatabaseSession currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             hibernateSession.persist(user);
             hibernateSession.flush();
             return user.getId();
@@ -59,9 +58,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUser(User user) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        DatabaseSession currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             hibernateSession.merge(user);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -71,9 +70,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void insertOrUpdate(User user) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        DatabaseSession currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             if (user.getId() > 0) {
                 hibernateSession.merge(user);
             } else {
@@ -86,8 +85,4 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    @Override
-    public SessionManager getSessionManager() {
-        return this.sessionManager;
-    }
 }
