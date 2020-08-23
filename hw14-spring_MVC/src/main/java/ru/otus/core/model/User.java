@@ -18,7 +18,7 @@ public class User {
     @Setter
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Getter
     @Setter
     private String name;
