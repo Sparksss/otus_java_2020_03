@@ -1,6 +1,5 @@
 package ru.otus.hibernate.dao;
 
-
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ public class UserDaoHibernate implements UserDao {
         User user = null;
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            user = currentSession.getHibernateSession().find(User.class, name);
+            user = currentSession.getSession().find(User.class, name);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -35,7 +34,7 @@ public class UserDaoHibernate implements UserDao {
         User user = null;
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            user = currentSession.getHibernateSession().find(User.class, id);
+            user = currentSession.getSession().find(User.class, id);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -46,7 +45,7 @@ public class UserDaoHibernate implements UserDao {
     public long insertUser(User user) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             hibernateSession.persist(user);
             hibernateSession.flush();
             return user.getId();
@@ -60,7 +59,7 @@ public class UserDaoHibernate implements UserDao {
     public void updateUser(User user) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             hibernateSession.merge(user);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -72,7 +71,7 @@ public class UserDaoHibernate implements UserDao {
     public void insertOrUpdate(User user) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
+            Session hibernateSession = currentSession.getSession();
             if (user.getId() > 0) {
                 hibernateSession.merge(user);
             } else {
