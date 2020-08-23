@@ -1,6 +1,7 @@
 package ru.otus.hibernate.dao;
 
 
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,15 +12,11 @@ import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
+@RequiredArgsConstructor
 public class UserDaoHibernate implements UserDao {
     private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
 
     private final SessionManagerHibernate sessionManager;
-
-    public UserDaoHibernate(SessionManagerHibernate sessionManager) {
-        this.sessionManager = sessionManager;
-    }
-
 
     @Override
     public User findByName(String name) {

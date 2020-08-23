@@ -9,6 +9,11 @@ targetCompatibility = JavaVersion.VERSION_13
 dependencies {
     implementation("com.h2database:h2")
     implementation("org.hibernate:hibernate-core")
+    compileOnly("org.projectlombok:lombok:1.18.12")
+    annotationProcessor("org.projectlombok:lombok:1.18.12")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.12")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.12")
 
 
     implementation("ch.qos.logback:logback-classic")
