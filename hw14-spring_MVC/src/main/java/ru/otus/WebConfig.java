@@ -14,9 +14,9 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
-@Configuration
-@ComponentScan
 @EnableWebMvc
+@Configuration
+@ComponentScan("ru.otus")
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
