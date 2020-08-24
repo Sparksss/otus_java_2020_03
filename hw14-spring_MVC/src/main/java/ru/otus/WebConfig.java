@@ -16,7 +16,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan("ru.otus")
+@ComponentScan
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
