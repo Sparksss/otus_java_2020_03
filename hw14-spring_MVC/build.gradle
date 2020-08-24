@@ -6,6 +6,8 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_13
 targetCompatibility = JavaVersion.VERSION_13
 
+version = '1.0.0'
+
 dependencies {
     implementation("com.h2database:h2")
     implementation("org.hibernate:hibernate-core")
