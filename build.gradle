@@ -34,7 +34,7 @@ allprojects {
             dependency("org.ow2.asm:asm-commons:${Versions.asm}")
             dependency("org.glassfish:javax.json:${Versions.glassfishJson}")
             dependency("javax.xml.bind:jaxb-api:${Versions.jaxbApi}")
-            dependency("org.projectlombok:lombok:1.18.12")
+            dependency("org.projectlombok:lombok:${Versions.lombok}")
         }
     }
 
