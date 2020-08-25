@@ -1,5 +1,6 @@
 package ru.otus;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+    @Getter
     private final ApplicationContext applicationContext;
 
     @Bean
