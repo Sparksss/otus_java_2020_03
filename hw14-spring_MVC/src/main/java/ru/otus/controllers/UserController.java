@@ -7,17 +7,21 @@ import org.springframework.ui.Model;
 import ru.otus.core.model.User;
 import ru.otus.services.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
 
-    UserService userService;
+    private UserService userService;
 
     @GetMapping({"/", "/user/list"})
     public String userListView(Model model) {
-        List<User> users = userService.findAll();
+        List<User> users = new ArrayList<>();
+        User user = new User();
+        user.setName("John");
+        users.add(user);
         model.addAttribute("users", users);
         return "userList.html";
     }
