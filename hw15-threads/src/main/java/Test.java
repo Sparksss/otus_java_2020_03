@@ -1,3 +1,6 @@
+/**
+ * Created by ilya on Aug , 2020
+ */
 public class Test implements Runnable {
     private int number = 0;
 
