@@ -8,12 +8,11 @@ import org.slf4j.LoggerFactory;
 import ru.otus.core.model.User;
 import ru.otus.core.sessionmanager.DatabaseSession;
 import ru.otus.core.sessionmanager.SessionManager;
-import ru.otus.hibernate.dao.UserDaoHibernate;
 
 @RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
 
-    private static Logger logger = LoggerFactory.getLogger(UserDaoHibernate.class);
+    private static Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
     @Getter
     private final SessionManager sessionManager;
