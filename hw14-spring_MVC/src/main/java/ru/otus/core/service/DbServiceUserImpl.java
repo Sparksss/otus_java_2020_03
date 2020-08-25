@@ -1,5 +1,6 @@
 package ru.otus.core.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
@@ -69,11 +70,13 @@ public class DbServiceUserImpl implements DBServiceUser {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = null;
+        List<User> users = new ArrayList<>();
         try {
             SessionManager currentSession = userDao.getSessionManager();
             Session session = currentSession.getSession();
-            users = session.createQuery("from users", User.class).getResultList();
+            session.beginTransaction();
+            users = session.createNativeQuery("SELECT * FROM users", User.class).getResultList();
+            session.disconnect();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
