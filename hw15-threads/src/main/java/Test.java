@@ -3,6 +3,9 @@
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Test implements Runnable {
 
     private final int MAX = 10;
@@ -12,6 +15,8 @@ public class Test implements Runnable {
     private boolean isIncrement = true;
 
     private boolean isNeedCalculate = true;
+
+    final private static Logger logger = LoggerFactory.getLogger(Test.class);
 
     @Override
     public void run() {
@@ -32,13 +37,13 @@ public class Test implements Runnable {
         this.isNeedCalculate = !this.isNeedCalculate;
         this.notifyAll();
         if(!this.isIncrement && this.number == 0) return;
-        showNumber(Thread.currentThread().getName());
+        showNumber();
             while (true) {
                 try {
                     this.wait();
                     break;
                 } catch (InterruptedException exception) {
-                    System.out.println(exception.getMessage());
+                    logger.error(exception.getMessage());
                 }
         }
     }
@@ -52,7 +57,7 @@ public class Test implements Runnable {
         --this.number;
     }
 
-    private void showNumber (String threadName) {
-        System.out.println(threadName + ": " + number);
+    private void showNumber () {
+        logger.info(String.valueOf(this.number));
     }
 }

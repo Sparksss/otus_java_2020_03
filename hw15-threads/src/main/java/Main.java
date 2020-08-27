@@ -1,7 +1,13 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by ilya on Aug, 2020
  */
 public class Main {
+
+    final private static Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
         Test test = new Test();
         Thread thread = new Thread(test);
@@ -13,7 +19,7 @@ public class Main {
         try {
             Thread.sleep(1);
         } catch (InterruptedException exception) {
-            System.out.println(exception.getMessage());
+            logger.error(exception.getMessage());
         }
 
         thread1.start();
