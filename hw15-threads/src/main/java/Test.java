@@ -11,20 +11,25 @@ public class Test implements Runnable {
 
     private boolean isIncrement = true;
 
+    private boolean isNeedCalculate = true;
+
     @Override
     public void run() {
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 20; i++) {
             calculate();
         }
     }
 
     private synchronized void calculate() {
-        if(this.number < this.MAX && this.isIncrement) {
-            increment();
-        } else {
-            this.isIncrement = false;
-            decrement();
+        if(this.isNeedCalculate) {
+            if(this.number < this.MAX && this.isIncrement) {
+                increment();
+            } else {
+                this.isIncrement = false;
+                decrement();
+            }
         }
+        this.isNeedCalculate = !this.isNeedCalculate;
         this.notifyAll();
         if(!this.isIncrement && this.number == 0) return;
         showNumber(Thread.currentThread().getName());
@@ -48,6 +53,6 @@ public class Test implements Runnable {
     }
 
     private void showNumber (String threadName) {
-        System.out.println(threadName + " -> " + number);
+        System.out.println(threadName + ": " + number);
     }
 }
