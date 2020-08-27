@@ -1,5 +1,5 @@
 /**
- * Created by ilya on Aug , 2020
+ * Created by ilya on Aug, 2020
  */
 public class Main {
     public static void main(String[] args) {
