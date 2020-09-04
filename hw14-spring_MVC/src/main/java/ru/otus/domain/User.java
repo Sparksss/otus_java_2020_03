@@ -1,4 +1,4 @@
-package ru.otus.core.model;
+package ru.otus.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
