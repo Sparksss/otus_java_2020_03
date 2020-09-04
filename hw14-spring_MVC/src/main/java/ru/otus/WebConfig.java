@@ -1,7 +1,6 @@
 package ru.otus;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,11 +17,14 @@ import org.thymeleaf.templatemode.TemplateMode;
 @EnableWebMvc
 @Configuration
 @ComponentScan
-@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Getter
     private final ApplicationContext applicationContext;
+
+    @Autowired
+    public WebConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
