@@ -1,38 +1,44 @@
 package ru.otus.services;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.core.dao.UserDao;
-import ru.otus.core.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.otus.domain.User;
 import ru.otus.repository.UserRepository;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;
-    UserDao userDao;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.getAll();
     }
 
     @Override
     public User findById(long id) {
-        return userDao.findById(id);
-    }
-
-    @Override
-    public User findByName(String name) {
-        return userDao.findByName(name);
+        if(id < 0) return null;
+        return userRepository.getById(id);
     }
 
     @Override
     public User save(User user) {
-        long id = userDao.insertUser(user);
-        return userDao.findById(id);
+        if(user != null) {
+            userRepository.save(user);
+        }
+        return user;
+    }
+
+    @Override
+    public void editUser(User user) {
+        if(user != null) userRepository.update(user);
     }
 }
