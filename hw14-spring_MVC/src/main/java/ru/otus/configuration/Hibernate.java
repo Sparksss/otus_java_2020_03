@@ -15,11 +15,12 @@ import java.util.Properties;
  */
 @Configuration
 public class Hibernate {
+
     @Bean
     public SessionFactory sessionFactory() {
         SessionFactory sessionFactory = null;
         try {
-        org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
+            org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
             Properties settings = new Properties();
             settings.put(Environment.DRIVER, "org.h2.Driver");
             settings.put(Environment.URL, "jdbc:h2:mem:OtusHomeWorkDB;DB_CLOSE_DELAY=-1");
