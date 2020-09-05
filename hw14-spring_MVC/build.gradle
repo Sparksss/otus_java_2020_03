@@ -28,7 +28,7 @@ dependencies {
     implementation("org.thymeleaf:thymeleaf-spring5")
     providedCompile("javax.servlet:javax.servlet-api")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    implementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-junit-jupiter")
@@ -58,4 +58,14 @@ tasks.withType(JavaCompile) {
 war {
     archiveName 'app.war'
     from 'src/main/resources'
+}
+
+def tomcatDir = "/home/ilya/apps/apache-tomcat-9.0.37"
+
+task deploylocal() {
+    copy{
+        from "${buildDir}/libs"
+        into "${tomcatDir}/webapps"
+        include '*.war'
+    }
 }
