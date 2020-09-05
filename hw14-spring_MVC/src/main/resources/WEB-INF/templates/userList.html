@@ -68,12 +68,13 @@
             <tr th:each="user : ${users}">
                 <td th:text="${user.id}">1</td>
                 <td th:text="${user.name}">John Doe</td>
+                <td><a th:href="@{edit(id=${user.id})}">Редактировать данные</a> </td>
+                <td><a th:href="@{delete(id=${user.id})}">Удалить пользователя</a></td>
             </tr>
         </tbody>
     </table>
 
     <br/><br/>
-    <h3>Тест View без контроллера:</h3>
-    <a th:href="@{/no-handler-view}">Перейти на View без контроллера</a>
+    <a href="create">Зарегистрировать нового пользователя</a>
 </body>
 </html>
