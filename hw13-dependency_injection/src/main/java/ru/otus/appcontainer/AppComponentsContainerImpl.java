@@ -1,5 +1,6 @@
 package ru.otus.appcontainer;
 
+import org.reflections.Reflections;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
@@ -12,14 +13,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
-    public AppComponentsContainerImpl(Class<?> initialConfigClass) {
+    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws Exception {
         processConfig(initialConfigClass);
     }
 
-    private void processConfig(Class<?> configClass) {
+    private void processConfig(Class<?> configClass) throws Exception {
         checkConfigClass(configClass);
         // You code here.
-        try {
             Constructor<?> constr = configClass.getDeclaredConstructor();
             constr.setAccessible(true);
             Object obj = constr.newInstance();
@@ -44,12 +44,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 }
 
             }
-
-            System.out.println("Hello");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
     }
 
     private void checkConfigClass(Class<?> configClass) {
@@ -68,9 +62,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         Parameter parameter = parameters[0];
         Executable executable = parameter.getDeclaringExecutable();
         Class<?>[] classesParams = executable.getParameterTypes();
-        for(int i = 0; i < classesParams.length; i++) {
-            for(Object obj : appComponents) {
-                if(classesParams[i].isAssignableFrom(obj.getClass())) {
+        for (Class<?> classesParam : classesParams) {
+            for (Object obj : appComponents) {
+                if (classesParam.isAssignableFrom(obj.getClass())) {
                     params[countParams] = obj;
                     countParams++;
                     break;
@@ -82,48 +76,39 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
 
     @Override
-    public <C> C getAppComponent(Class<C> componentClass) {
+    public <C> C getAppComponent(Class<C> componentClass) throws Exception {
         Object componentObj = null;
-        Class<?>[] parameterTypes = new Class[componentClass.getTypeParameters().length];
-        int i = 0;
-        for(Object obj : appComponents) {
-            parameterTypes[i] = obj.getClass();
-            i++;
+        Class<C> clazz = componentClass;
+        if(componentClass.isInterface()) {
+            clazz = (Class<C>) this.findImplementedClass(componentClass);
         }
-        Constructor<?>[] constructors = componentClass.getConstructors();
+        Constructor<?>[] constructors = clazz.getConstructors();
         Parameter[] parameters = constructors[0].getParameters();
         if (parameters.length > 0) {
             Constructor<?> constr = constructors[0];
             constr.setAccessible(true);
             Object[] includedParams = this.collectParams(parameters, appComponents);
-            try {
-                componentObj = constr.newInstance(includedParams);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            componentObj = constr.newInstance(includedParams);
         } else  {
             Constructor<?> constr = constructors[0];
             constr.setAccessible(true);
-            try {
-                componentObj = constr.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            componentObj = constr.newInstance();
         }
         return (C) componentObj;
     }
 
     @Override
-    public <C> C getAppComponent(String componentName) {
-        return null;
+    public <C> C getAppComponent(String componentName) throws Exception {
+        return (C) getAppComponent(Class.forName(componentName));
+    }
+
+
+    private Class<?> findImplementedClass(Class<?> clazz) {
+        Reflections reflections = new Reflections("ru.otus");
+        Set<Class<? extends Object>> allClasses =
+                reflections.getSubTypesOf((Class<Object>) clazz);
+        Iterator<Class<? extends Object>> it = allClasses.iterator();
+        return it.next();
     }
 
 }
