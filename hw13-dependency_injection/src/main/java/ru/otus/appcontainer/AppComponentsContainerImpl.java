@@ -1,6 +1,5 @@
 package ru.otus.appcontainer;
 
-import org.reflections.Reflections;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
@@ -31,16 +30,10 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                     .collect(Collectors.toList());
 
             for(Method method : methods) {
-                Parameter[] parameters = method.getParameters();
-                if (parameters.length > 0) {
-                    Object[] includedParams = this.collectParams(parameters, appComponents);
-                    appComponents.add(method.invoke(obj, includedParams));
-                    appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,method.invoke(obj, includedParams));
-                } else {
-                    appComponents.add(method.invoke(obj));
-                    appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,method.invoke(obj));
-                }
-
+                Class<?>[] typeParams = method.getParameterTypes();
+                Object[] includedParams = this.collectParams(typeParams, appComponents);
+                appComponents.add(method.invoke(obj, includedParams));
+                appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,method.invoke(obj, includedParams));
             }
     }
 
@@ -54,15 +47,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return method.isAnnotationPresent(AppComponent.class);
     }
 
-    private Object[] collectParams(Parameter[] parameters, List<Object> appComponents) {
-        Object[] params = new Object[parameters.length];
+    private Object[] collectParams(Class<?>[] typeParams, List<Object> appComponents) {
+        Object[] params = new Object[typeParams.length];
         int countParams = 0;
-        Parameter parameter = parameters[0];
-        Executable executable = parameter.getDeclaringExecutable();
-        Class<?>[] classesParams = executable.getParameterTypes();
-        for (Class<?> classesParam : classesParams) {
+        for (Class<?> type : typeParams) {
             for (Object obj : appComponents) {
-                if (classesParam.isAssignableFrom(obj.getClass())) {
+                if (type.isAssignableFrom(obj.getClass())) {
                     params[countParams] = obj;
                     countParams++;
                     break;
@@ -72,41 +62,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return params;
     }
 
-
     @Override
-    public <C> C getAppComponent(Class<C> componentClass) throws Exception {
-        Object componentObj = null;
-        Class<C> clazz = componentClass;
-        if(componentClass.isInterface()) {
-            clazz = (Class<C>) this.findImplementedClass(componentClass);
-        }
-        Constructor<?>[] constructors = clazz.getConstructors();
-        Parameter[] parameters = constructors[0].getParameters();
-        if (parameters.length > 0) {
-            Constructor<?> constr = constructors[0];
-            constr.setAccessible(true);
-            Object[] includedParams = this.collectParams(parameters, appComponents);
-            componentObj = constr.newInstance(includedParams);
-        } else  {
-            Constructor<?> constr = constructors[0];
-            constr.setAccessible(true);
-            componentObj = constr.newInstance();
-        }
-        return (C) componentObj;
+    public <C> C getAppComponent(Class<C> componentClass) { ;
+      return (C) this.appComponents.stream().filter(component -> componentClass.isAssignableFrom(component.getClass())).findFirst().get();
     }
 
     @Override
-    public <C> C getAppComponent(String componentName) throws Exception {
-        return (C) getAppComponent(Class.forName(componentName));
+    public <C> C getAppComponent(String componentName) {
+       return (C) this.appComponentsByName.get(componentName);
     }
-
-
-    private Class<?> findImplementedClass(Class<?> clazz) {
-        Reflections reflections = new Reflections("ru.otus");
-        Set<Class<? extends Object>> allClasses =
-                reflections.getSubTypesOf((Class<Object>) clazz);
-        Iterator<Class<? extends Object>> it = allClasses.iterator();
-        return it.next();
-    }
-
 }
