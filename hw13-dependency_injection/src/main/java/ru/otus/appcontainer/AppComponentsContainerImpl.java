@@ -7,6 +7,7 @@ import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
@@ -23,14 +24,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             Constructor<?> constr = configClass.getDeclaredConstructor();
             constr.setAccessible(true);
             Object obj = constr.newInstance();
-            List<Method> methods = new ArrayList<>();
-            for(Method method : configClass.getMethods()) {
-               if(this.isAnnotatedMethod(method)) {
-                   methods.add(method);
-                }
-            }
-
-            methods.sort(Comparator.comparingInt(thatMethod -> thatMethod.getAnnotation(AppComponent.class).order()));
+            List<Method> methods = Arrays.stream(configClass.getMethods())
+                    .filter(this::isAnnotatedMethod)
+                    .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class)
+                            .order()))
+                    .collect(Collectors.toList());
 
             for(Method method : methods) {
                 Parameter[] parameters = method.getParameters();
