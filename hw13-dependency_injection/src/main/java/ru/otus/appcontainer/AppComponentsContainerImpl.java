@@ -53,7 +53,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void collectComponents(List<Method> methods, Object ConfigInstance) throws Exception {
         for(Method method : methods) {
             Class<?>[] typeParams = method.getParameterTypes();
-            Object[] includedParams = this.collectParams(typeParams, appComponents);
+            Object[] includedParams = this.collectParams(typeParams);
             Object component = method.invoke(ConfigInstance, includedParams);
             appComponents.add(component);
             appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,component);
@@ -70,17 +70,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return method.isAnnotationPresent(AppComponent.class);
     }
 
-    private Object[] collectParams(Class<?>[] typeParams, List<Object> appComponents) {
+    private Object[] collectParams(Class<?>[] typeParams) {
         Object[] params = new Object[typeParams.length];
         int countParams = 0;
         for (Class<?> type : typeParams) {
-            for (Object obj : appComponents) {
-                if (type.isAssignableFrom(obj.getClass())) {
-                    params[countParams] = obj;
-                    countParams++;
-                    break;
-                }
-            }
+            params[countParams] = this.getAppComponent(type);
+            countParams++;
         }
         return params;
     }
