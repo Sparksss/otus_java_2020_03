@@ -17,6 +17,16 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         processConfig(initialConfigClass);
     }
 
+    @Override
+    public <C> C getAppComponent(Class<C> componentClass) { ;
+        return (C) this.appComponents.stream().filter(component -> componentClass.isAssignableFrom(component.getClass())).findFirst().get();
+    }
+
+    @Override
+    public <C> C getAppComponent(String componentName) {
+        return (C) this.appComponentsByName.get(componentName);
+    }
+
     private void processConfig(Class<?> configClass) throws Exception {
         checkConfigClass(configClass);
         // You code here.
@@ -32,8 +42,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             for(Method method : methods) {
                 Class<?>[] typeParams = method.getParameterTypes();
                 Object[] includedParams = this.collectParams(typeParams, appComponents);
-                appComponents.add(method.invoke(obj, includedParams));
-                appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,method.invoke(obj, includedParams));
+                Object component = method.invoke(obj, includedParams);
+                appComponents.add(component);
+                appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,component);
             }
     }
 
@@ -60,15 +71,5 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             }
         }
         return params;
-    }
-
-    @Override
-    public <C> C getAppComponent(Class<C> componentClass) { ;
-      return (C) this.appComponents.stream().filter(component -> componentClass.isAssignableFrom(component.getClass())).findFirst().get();
-    }
-
-    @Override
-    public <C> C getAppComponent(String componentName) {
-       return (C) this.appComponentsByName.get(componentName);
     }
 }
