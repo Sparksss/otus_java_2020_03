@@ -30,22 +30,34 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void processConfig(Class<?> configClass) throws Exception {
         checkConfigClass(configClass);
         // You code here.
-            Constructor<?> constr = configClass.getDeclaredConstructor();
-            constr.setAccessible(true);
-            Object obj = constr.newInstance();
-            List<Method> methods = Arrays.stream(configClass.getMethods())
-                    .filter(this::isAnnotatedMethod)
-                    .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class)
-                            .order()))
-                    .collect(Collectors.toList());
+            Object obj = this.createInstance(configClass);
+            List<Method> methods = this.getOrderedMethods(configClass);
+            this.collectComponents(methods, obj);
+    }
 
-            for(Method method : methods) {
-                Class<?>[] typeParams = method.getParameterTypes();
-                Object[] includedParams = this.collectParams(typeParams, appComponents);
-                Object component = method.invoke(obj, includedParams);
-                appComponents.add(component);
-                appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,component);
-            }
+    private Object createInstance(Class<?> configClass) throws Exception {
+        Constructor<?> constr = configClass.getDeclaredConstructor();
+        constr.setAccessible(true);
+        return constr.newInstance();
+    }
+
+    private List<Method> getOrderedMethods(Class<?> configClass) {
+        return Arrays.stream(configClass.getMethods())
+                .filter(this::isAnnotatedMethod)
+                .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class)
+                        .order()))
+                .collect(Collectors.toList());
+
+    }
+
+    private void collectComponents(List<Method> methods, Object ConfigInstance) throws Exception {
+        for(Method method : methods) {
+            Class<?>[] typeParams = method.getParameterTypes();
+            Object[] includedParams = this.collectParams(typeParams, appComponents);
+            Object component = method.invoke(ConfigInstance, includedParams);
+            appComponents.add(component);
+            appComponentsByName.put(method.getAnnotation(AppComponent.class).name() ,component);
+        }
     }
 
     private void checkConfigClass(Class<?> configClass) {
