@@ -6,3 +6,15 @@ management:
     web:
       exposure:
         include: info, health, beans
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/stocks
+    username: stocks
+    password: stocks
+    driverClassName: org.postgresql.Driver
