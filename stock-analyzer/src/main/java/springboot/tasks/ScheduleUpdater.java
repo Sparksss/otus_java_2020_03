@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import springboot.domains.CompanyRest;
+import springboot.domains.CompanyDataRest;
+import springboot.services.ExtractCompanyData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by ilya on Sep, 2020
@@ -22,16 +24,20 @@ public class ScheduleUpdater {
 
     private final RestTemplate restTemplate;
 
-    public ScheduleUpdater(RestTemplate restTemplate) {
+    private ExtractCompanyData extractCompanyData;
+
+    public ScheduleUpdater(RestTemplate restTemplate, ExtractCompanyData extractCompanyData) {
         this.restTemplate = restTemplate;
+        this.extractCompanyData = extractCompanyData;
     }
 
     @Scheduled(fixedRate = 5000)
     public void reportCurrentTime() {
         logger.info("The time is now {}", dateFormat.format(new Date()));
-        CompanyRest s = restTemplate.getForObject("https://www.alphavantage.co/", CompanyRest.class);
+        Map<String, Map> s = restTemplate.getForObject("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=S1RP7VOYRC84TD3Z", Map.class);
 //        logger.info("This is company Rest", s);
-        System.out.println(s);
+        CompanyDataRest companyDataRest = extractCompanyData.extract(s);
+        System.out.println(companyDataRest.getClosePrice());
     }
 
 }
