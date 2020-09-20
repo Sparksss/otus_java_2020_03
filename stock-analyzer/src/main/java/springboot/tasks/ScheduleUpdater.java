@@ -35,7 +35,6 @@ public class ScheduleUpdater {
     public void reportCurrentTime() {
         logger.info("The time is now {}", dateFormat.format(new Date()));
         Map<String, Map> s = restTemplate.getForObject("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=S1RP7VOYRC84TD3Z", Map.class);
-//        logger.info("This is company Rest", s);
         CompanyDataRest companyDataRest = extractCompanyData.extract(s);
         System.out.println(companyDataRest.getClosePrice());
     }
