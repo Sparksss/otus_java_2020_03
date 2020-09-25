@@ -13,3 +13,5 @@ spring:
     username: stocks
     password: stocks
     driverClassName: org.postgresql.Driver
+schedule:
+  fixedRate: 5000

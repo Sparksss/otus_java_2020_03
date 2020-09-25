@@ -31,7 +31,7 @@ public class ScheduleUpdater {
         this.extractCompanyData = extractCompanyData;
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRateString = "${schedule.fixedRate}")
     public void reportCurrentTime() {
         logger.info("The time is now {}", dateFormat.format(new Date()));
         Map<String, Map> s = restTemplate.getForObject("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=S1RP7VOYRC84TD3Z", Map.class);
