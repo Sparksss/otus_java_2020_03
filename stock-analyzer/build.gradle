@@ -26,11 +26,14 @@ configurations.all {
 }
 
 dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.3.RELEASE'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.3.3.RELEASE'
     runtimeOnly group: 'org.postgresql', name : 'postgresql', version: '42.2.16'
-    compileOnly group: 'org.projectlombok', name : 'lombok', version: '1.18.12'
+    testCompileOnly group: 'org.projectlombok', name: 'lombok'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.3.RELEASE'
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '3.1.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
