@@ -50,8 +50,14 @@ public class CompanyDaoJdbc implements CompanyDao {
         public Company mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
+            String symbol = resultSet.getString("symbol");
             String description = resultSet.getString("description");
-            return new Company(id, name, description);
+            Company company = new Company();
+            company.setId(id);
+            company.setName(name);
+            company.setSymbol(symbol);
+            company.setDescription(description);
+            return company;
         }
     }
 }
