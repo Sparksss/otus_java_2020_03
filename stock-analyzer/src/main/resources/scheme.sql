@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS stocks_price
 		constraint stocks_price_pk
 			primary key,
 	company_id int references companies (id),
-	date date not null,
+	date_price date not null,
 	open double,
 	close double,
-	hight double,
+	high double,
 	low double,
 	volume int
 );
