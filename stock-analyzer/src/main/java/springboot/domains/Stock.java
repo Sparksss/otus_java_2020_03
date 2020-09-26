@@ -9,9 +9,9 @@ import java.util.Date;
  * Created by ilya on Sep, 2020
  */
 @Data
-public class StocksPrice {
+public class Stock {
     private long id;
-    private int companyId;
+    private long companyId;
     private Date date;
     private double openPrice;
     private double closePrice;
