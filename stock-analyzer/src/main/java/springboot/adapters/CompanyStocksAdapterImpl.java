@@ -1,6 +1,6 @@
 package springboot.adapters;
 
-import springboot.domains.StocksPrice;
+import springboot.domains.Stock;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,9 +21,9 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
     private static final String DAILY_VOLUME_KEY = "5. volume";
 
     @Override
-    public StocksPrice convertToServiceFormat(Map<String, Map> data) {
+    public Stock convertToServiceFormat(Map<String, Map> data) {
 
-        StocksPrice stocksPrice = new StocksPrice();
+        Stock stock = new Stock();
         String currentDate = simpleDateFormat.format(new Date());
 
         Map<String, Map> collectionDates = data.get(NAME_OF_COLLECTION_DATES);
@@ -33,12 +33,12 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
         String dailyVolume = collectionPricesPerDay.get(DAILY_VOLUME_KEY);
         String highPrice = collectionPricesPerDay.get(HIGH_PRICE_KEY);
         String lowPrice = collectionPricesPerDay.get(LOW_PRICE_KEY);
-        stocksPrice.setDate(new Date());
-        stocksPrice.setOpenPrice(Double.parseDouble(openPrice));
-        stocksPrice.setClosePrice(Double.parseDouble(closePrice));
-        stocksPrice.setHigh(Double.parseDouble(highPrice));
-        stocksPrice.setLow(Double.parseDouble(lowPrice));
-        stocksPrice.setVolume(Double.parseDouble(dailyVolume));
-        return stocksPrice;
+        stock.setDate(new Date());
+        stock.setOpenPrice(Double.parseDouble(openPrice));
+        stock.setClosePrice(Double.parseDouble(closePrice));
+        stock.setHigh(Double.parseDouble(highPrice));
+        stock.setLow(Double.parseDouble(lowPrice));
+        stock.setVolume(Double.parseDouble(dailyVolume));
+        return stock;
     }
 }
