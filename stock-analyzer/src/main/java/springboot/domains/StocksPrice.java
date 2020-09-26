@@ -1,23 +1,21 @@
 package springboot.domains;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import java.sql.Date;
+
+import java.util.Date;
+
 
 /**
  * Created by ilya on Sep, 2020
  */
-@RequiredArgsConstructor
 @Data
 public class StocksPrice {
-
     private long id;
-
     private int companyId;
-
     private Date date;
-
-    private int openPrice;
-
-    private int closePrice;
+    private double openPrice;
+    private double closePrice;
+    private double high;
+    private double low;
+    private double volume;
 }
