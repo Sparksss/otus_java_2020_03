@@ -23,8 +23,6 @@ public class ScheduleUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleUpdater.class);
 
-    private final String URL = "https://www.alphavantage.co/query";
-
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     private final RestTemplate restTemplate;
@@ -43,10 +41,12 @@ public class ScheduleUpdater {
 
     @Scheduled(fixedRateString = "${schedule.fixedRate}")
     public void reportCurrentTime() {
-        logger.info("The time is now {}", dateFormat.format(new Date()));
+        logger.info("Next run scheduler {}", dateFormat.format(new Date()));
         List<Company> companies = companyDao.getAll();
+        String apiKey = "${schedule.alphavantage.apikey}";
+        String url = "${schedule.alphavantage.url}";
         for(Company company : companies) {
-            preparedURLWithParams.append(URL + "?function=" + Periods.valueOf("DAILY") + "&symbol=" + company.getSymbol() + "apikey=S1RP7VOYRC84TD3Z");
+            preparedURLWithParams.append(url + "?function=" + Periods.valueOf("DAILY") + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             extractCompanyData.save(data);
             preparedURLWithParams.setLength(0);
