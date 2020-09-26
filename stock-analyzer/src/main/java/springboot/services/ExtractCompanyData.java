@@ -3,7 +3,8 @@ package springboot.services;
 import org.springframework.stereotype.Component;
 import springboot.adapters.CompanyStocksAdapter;
 import springboot.adapters.CompanyStocksAdapterImpl;
-import springboot.domains.StocksPrice;
+import springboot.dao.StockDao;
+import springboot.domains.Stock;
 
 import java.util.Map;
 
@@ -13,10 +14,16 @@ import java.util.Map;
 @Component
 public class ExtractCompanyData {
 
-    CompanyStocksAdapter companyStocksAdapter;
+    private CompanyStocksAdapter companyStocksAdapter;
+    private StockDao stockDao;
+
+    public ExtractCompanyData(StockDao stockDao) {
+        this.stockDao = stockDao;
+    }
 
     public void save(Map<String, Map> data) {
         companyStocksAdapter = new CompanyStocksAdapterImpl();
-        StocksPrice stocksPrice = companyStocksAdapter.convertToServiceFormat(data);
+        Stock stock = companyStocksAdapter.convertToServiceFormat(data);
+        this.stockDao.insert(stock);
     }
 }
