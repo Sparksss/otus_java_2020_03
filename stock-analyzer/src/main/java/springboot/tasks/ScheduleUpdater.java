@@ -52,8 +52,13 @@ public class ScheduleUpdater {
         for(Company company : companies) {
             preparedURLWithParams.append(url + "?function=" + Periods.valueOf("WEEKLY").getPeriod() + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
-            extractCompanyData.save(company.getId() ,data);
-            preparedURLWithParams.setLength(0);
+            try {
+                extractCompanyData.save(company.getId() ,data);
+                preparedURLWithParams.setLength(0);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                break;
+            }
         }
     }
 
