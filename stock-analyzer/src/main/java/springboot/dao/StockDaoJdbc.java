@@ -26,7 +26,7 @@ public class StockDaoJdbc implements StockDao {
 
     @Override
     public Stock getById(long id) {
-        return this.jdbc.queryForObject("select * from stocks_price", Stock.class);
+        return this.jdbc.queryForObject("select * from stocks_price where id = ?", new Object[]{id}, new StockMapper());
     }
 
     @Override
