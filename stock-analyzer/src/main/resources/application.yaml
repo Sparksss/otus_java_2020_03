@@ -13,6 +13,8 @@ spring:
     username: stocks
     password: stocks
     driverClassName: org.postgresql.Driver
+    schema: scheme.sql
+    data: data.sql
 schedule:
   fixedRate: 5000
 alphavantage:
