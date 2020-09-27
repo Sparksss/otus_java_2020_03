@@ -21,9 +21,11 @@ public class ExtractCompanyData {
         this.stockDao = stockDao;
     }
 
-    public void save(Map<String, Map> data) {
+    public void save(long companyId, Map<String, Map> data) {
         companyStocksAdapter = new CompanyStocksAdapterImpl();
-        Stock stock = companyStocksAdapter.convertToServiceFormat(data);
-        this.stockDao.insert(stock);
+        Stock stock = companyStocksAdapter.convertToServiceFormat(companyId ,data);
+        if(stock != null) {
+            this.stockDao.insert(stock);
+        }
     }
 }
