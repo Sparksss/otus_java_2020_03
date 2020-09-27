@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, beans
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    schema: scheme.sql
+    data: test-data.sql
+schedule:
+  fixedRate: 5000
+alphavantage:
+    apikey: S1RP7VOYRC84TD3Z
+    url: https://www.alphavantage.co/query
