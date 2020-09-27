@@ -12,4 +12,5 @@ public interface CompanyDao {
     void insert(Company company);
     void update(Company company);
     List<Company> getAll();
+    int count();
 }

@@ -31,12 +31,17 @@ public class CompanyDaoJdbc implements CompanyDao {
 
     @Override
     public void insert(Company company) {
-        jdbc.update("insert into companies (name, description) values (?, ?)", company.getName(), company.getDescription());
+        jdbc.update("insert into companies (name, symbol, description) values (?, ?, ?)", company.getName(), company.getSymbol(), company.getDescription());
     }
 
     @Override
     public void update(Company company) {
-        jdbc.update("update companies set name = ?, description = ? where id = ?", company.getName(), company.getDescription(), company.getId());
+        jdbc.update("update companies set name = ?, symbol = ? ,description = ? where id = ?", company.getName(), company.getSymbol() ,company.getDescription(), company.getId());
+    }
+
+    @Override
+    public int count() {
+        return jdbc.queryForObject("select count(*) from companies", int.class);
     }
 
     @Override
