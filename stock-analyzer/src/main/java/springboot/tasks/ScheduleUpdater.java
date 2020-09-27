@@ -50,9 +50,9 @@ public class ScheduleUpdater {
         String apiKey =  this.alphavantageConf.getApikey();
         String url = this.alphavantageConf.getUrl();
         for(Company company : companies) {
-            preparedURLWithParams.append(url + "?function=" + Periods.valueOf("DAILY") + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
+            preparedURLWithParams.append(url + "?function=" + Periods.valueOf("WEEKLY").getPeriod() + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
-            extractCompanyData.save(data);
+            extractCompanyData.save(company.getId() ,data);
             preparedURLWithParams.setLength(0);
         }
     }
