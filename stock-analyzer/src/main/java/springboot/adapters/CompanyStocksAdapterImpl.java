@@ -21,13 +21,15 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
     private static final String DAILY_VOLUME_KEY = "5. volume";
 
     @Override
-    public Stock convertToServiceFormat(long companyId ,Map<String, Map> data) {
+    public Stock convertToServiceFormat(long companyId ,Map<String, Map> data) throws Exception {
 
         Stock stock = new Stock();
         String currentDate = simpleDateFormat.format(new Date());
 
         Map<String, Map> collectionDates = data.get(NAME_OF_COLLECTION_DATES);
         Map<String, String> collectionPricesPerDay = collectionDates.get(currentDate);
+        if(collectionPricesPerDay == null) throw new Exception("Not found for this date");
+
         String openPrice = collectionPricesPerDay.get(OPEN_PRICE_KEY);
         String closePrice = collectionPricesPerDay.get(CLOSE_PRICE_KEY);
         String dailyVolume = collectionPricesPerDay.get(DAILY_VOLUME_KEY);

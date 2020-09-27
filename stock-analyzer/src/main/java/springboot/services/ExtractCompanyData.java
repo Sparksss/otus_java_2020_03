@@ -21,7 +21,7 @@ public class ExtractCompanyData {
         this.stockDao = stockDao;
     }
 
-    public void save(long companyId, Map<String, Map> data) {
+    public void save(long companyId, Map<String, Map> data) throws Exception {
         companyStocksAdapter = new CompanyStocksAdapterImpl();
         Stock stock = companyStocksAdapter.convertToServiceFormat(companyId ,data);
         if(stock != null) {
