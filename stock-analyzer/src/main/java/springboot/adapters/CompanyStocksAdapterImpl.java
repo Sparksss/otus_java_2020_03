@@ -11,8 +11,8 @@ import java.util.Map;
  */
 public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd");
-    private final String NAME_OF_COLLECTION_DATES = "Time Series (Daily)";
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
 
     private static final String OPEN_PRICE_KEY = "1. open";
     private static final String HIGH_PRICE_KEY = "2. high";
@@ -21,7 +21,7 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
     private static final String DAILY_VOLUME_KEY = "5. volume";
 
     @Override
-    public Stock convertToServiceFormat(Map<String, Map> data) {
+    public Stock convertToServiceFormat(long companyId ,Map<String, Map> data) {
 
         Stock stock = new Stock();
         String currentDate = simpleDateFormat.format(new Date());
@@ -33,6 +33,8 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
         String dailyVolume = collectionPricesPerDay.get(DAILY_VOLUME_KEY);
         String highPrice = collectionPricesPerDay.get(HIGH_PRICE_KEY);
         String lowPrice = collectionPricesPerDay.get(LOW_PRICE_KEY);
+
+        stock.setCompanyId(companyId);
         stock.setDate(new Date());
         stock.setOpenPrice(Double.parseDouble(openPrice));
         stock.setClosePrice(Double.parseDouble(closePrice));
