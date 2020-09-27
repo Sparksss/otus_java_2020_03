@@ -10,14 +10,14 @@ CREATE TABLE IF NOT EXISTS companies
 
 CREATE TABLE IF NOT EXISTS stocks_price
 (
-	id serial
-		constraint stocks_price_pk
-			primary key,
-	company_id int references companies (id),
-	date_price date not null,
-	open double,
-	close double,
-	high double,
-	low double,
-	volume int
+    id serial
+        constraint stocks_price_pk
+            primary key,
+    company_id int references companies (id),
+    date_price date not null,
+    open double precision,
+    close double precision,
+    high double precision,
+    low double precision,
+    volume int
 );
