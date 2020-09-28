@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by ilya on Sep, 2020
  */
-public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
+public class DataProviderImpl implements DataProvider {
 
 
     private final static String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
@@ -20,7 +20,7 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
     private static final String DAILY_VOLUME_KEY = "5. volume";
 
     @Override
-    public Stock convertToServiceFormat(long companyId,Date reportDay,Map<String, Map> data) throws Exception {
+    public Stock getData(long companyId,Date reportDay,Map<String, Map> data) throws Exception {
 
         Stock stock = new Stock();
 

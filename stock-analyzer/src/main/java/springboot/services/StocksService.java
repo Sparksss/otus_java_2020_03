@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import springboot.adapters.CompanyStocksAdapter;
-import springboot.adapters.CompanyStocksAdapterImpl;
+import springboot.adapters.DataProvider;
+import springboot.adapters.DataProviderImpl;
 import springboot.config.AlphavantageConf;
 import springboot.dao.CompanyDao;
 import springboot.dao.StockDao;
@@ -28,7 +28,7 @@ public class StocksService {
 
     private final RestTemplate restTemplate;
     private final AlphavantageConf alphavantageConf;
-    private final CompanyStocksAdapter companyStocksAdapter;
+    private final DataProvider dataProvider;
     private final StockDao stockDao;
     private final CompanyDao companyDao;
 
@@ -37,7 +37,7 @@ public class StocksService {
         this.restTemplate = restTemplate;
         this.companyDao = companyDao;
         this.alphavantageConf = alphavantageConf;
-        this.companyStocksAdapter = new CompanyStocksAdapterImpl();
+        this.dataProvider = new DataProviderImpl();
     }
 
     public void collectPrices(Date reportDay) {
@@ -50,7 +50,7 @@ public class StocksService {
             preparedURLWithParams.append(String.format("%s?function=%s&symbol=%s&apikey=%s", url, Periods.valueOf("WEEKLY").getPeriod(), company.getSymbol(), apiKey));
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             try {
-                Stock stock = companyStocksAdapter.convertToServiceFormat(company.getId(), reportDay, data);
+                Stock stock = dataProvider.getData(company.getId(), reportDay, data);
                 saveData(stock);
                 preparedURLWithParams.setLength(0);
             } catch (Exception e) {
