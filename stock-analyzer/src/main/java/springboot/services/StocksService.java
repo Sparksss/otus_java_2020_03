@@ -31,7 +31,6 @@ public class StocksService {
     private final CompanyStocksAdapter companyStocksAdapter;
     private final StockDao stockDao;
     private final CompanyDao companyDao;
-    private final StringBuilder preparedURLWithParams = new StringBuilder();
 
     public StocksService(RestTemplate restTemplate, StockDao stockDao, CompanyDao companyDao, AlphavantageConf alphavantageConf) {
         this.stockDao = stockDao;
@@ -42,6 +41,7 @@ public class StocksService {
     }
 
     public void collectPrices(Date reportDay) {
+        final StringBuilder preparedURLWithParams = new StringBuilder();
         List<Company> companies = companyDao.getAll();
         String apiKey =  this.alphavantageConf.getApikey();
         String url = this.alphavantageConf.getUrl();
