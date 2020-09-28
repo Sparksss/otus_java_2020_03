@@ -2,7 +2,6 @@ package springboot.adapters;
 
 import springboot.domains.Stock;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import java.util.Map;
  */
 public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     private final String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
 
     private static final String OPEN_PRICE_KEY = "1. open";
@@ -21,13 +20,12 @@ public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
     private static final String DAILY_VOLUME_KEY = "5. volume";
 
     @Override
-    public Stock convertToServiceFormat(long companyId ,Map<String, Map> data) throws Exception {
+    public Stock convertToServiceFormat(long companyId,Date reportDay,Map<String, Map> data) throws Exception {
 
         Stock stock = new Stock();
-        String currentDate = simpleDateFormat.format(new Date());
 
         Map<String, Map> collectionDates = data.get(NAME_OF_COLLECTION_DATES);
-        Map<String, String> collectionPricesPerDay = collectionDates.get(currentDate);
+        Map<String, String> collectionPricesPerDay = collectionDates.get(reportDay);
         if(collectionPricesPerDay == null) throw new Exception("Not found for this date");
 
         String openPrice = collectionPricesPerDay.get(OPEN_PRICE_KEY);

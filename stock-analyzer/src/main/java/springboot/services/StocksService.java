@@ -14,6 +14,7 @@ import springboot.domains.Stock;
 import springboot.parameters.Periods;
 import springboot.tasks.ScheduleUpdater;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,10 @@ public class StocksService {
 
     private final RestTemplate restTemplate;
     private final AlphavantageConf alphavantageConf;
-    private CompanyStocksAdapter companyStocksAdapter;
-    private StockDao stockDao;
-    private CompanyDao companyDao;
-    private StringBuilder preparedURLWithParams = new StringBuilder();
+    private final CompanyStocksAdapter companyStocksAdapter;
+    private final StockDao stockDao;
+    private final CompanyDao companyDao;
+    private final StringBuilder preparedURLWithParams = new StringBuilder();
 
     public StocksService(RestTemplate restTemplate, StockDao stockDao, CompanyDao companyDao, AlphavantageConf alphavantageConf) {
         this.stockDao = stockDao;
@@ -40,7 +41,7 @@ public class StocksService {
         this.companyStocksAdapter = new CompanyStocksAdapterImpl();
     }
 
-    public void collectPrices() {
+    public void collectPrices(Date reportDay) {
         List<Company> companies = companyDao.getAll();
         String apiKey =  this.alphavantageConf.getApikey();
         String url = this.alphavantageConf.getUrl();
@@ -49,7 +50,7 @@ public class StocksService {
             preparedURLWithParams.append(url + "?function=" + Periods.valueOf("WEEKLY").getPeriod() + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             try {
-                Stock stock = companyStocksAdapter.convertToServiceFormat(company.getId() ,data);
+                Stock stock = companyStocksAdapter.convertToServiceFormat(company.getId(), reportDay, data);
                 if(stock != null) {
                     stockDao.insert(stock);
                 }
