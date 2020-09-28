@@ -47,7 +47,7 @@ public class StocksService {
         String url = this.alphavantageConf.getUrl();
 
         for(Company company : companies) {
-            preparedURLWithParams.append(url + "?function=" + Periods.valueOf("WEEKLY").getPeriod() + "&symbol=" + company.getSymbol() + "&apikey=" + apiKey);
+            preparedURLWithParams.append(String.format("%s?function=%s&symbol=%s&apikey=%s", url, Periods.valueOf("WEEKLY").getPeriod(), company.getSymbol(), apiKey));
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             try {
                 Stock stock = companyStocksAdapter.convertToServiceFormat(company.getId(), reportDay, data);
