@@ -51,14 +51,17 @@ public class StocksService {
             Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             try {
                 Stock stock = companyStocksAdapter.convertToServiceFormat(company.getId(), reportDay, data);
-                if(stock != null) {
-                    stockDao.insert(stock);
-                }
+                saveData(stock);
                 preparedURLWithParams.setLength(0);
             } catch (Exception e) {
                 logger.error(e.getMessage());
-                break;
             }
+        }
+    }
+
+    private void saveData(Stock stock) {
+        if(stock != null) {
+            stockDao.insert(stock);
         }
     }
 }
