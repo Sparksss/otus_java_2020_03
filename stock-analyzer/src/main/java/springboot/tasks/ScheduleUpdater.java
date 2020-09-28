@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import springboot.services.StocksService;
+import springboot.services.DataProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,10 +20,10 @@ public class ScheduleUpdater {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private final StocksService stocksService;
+    private final DataProvider dataProvider;
 
-    public ScheduleUpdater(StocksService stocksService) {
-        this.stocksService = stocksService;
+    public ScheduleUpdater(DataProvider dataProvider) {
+        this.dataProvider = dataProvider;
     }
 
     @Scheduled(fixedRateString = "${schedule.fixedRate}")
@@ -31,7 +31,7 @@ public class ScheduleUpdater {
         logger.info("Next run scheduler {}", dateFormat.format(new Date()));
         Calendar calendar = getYesterdayDate();
         if(isExchangeWorkDay(calendar)) {
-            stocksService.collectPrices(calendar.getTime());
+            dataProvider.collectData(calendar.getTime());
         }
     }
 

@@ -2,13 +2,14 @@ package springboot.adapters;
 
 import springboot.domains.Stock;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by ilya on Sep, 2020
  */
-public class DataProviderImpl implements DataProvider {
+public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
 
 
     private final static String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
@@ -21,11 +22,10 @@ public class DataProviderImpl implements DataProvider {
 
     @Override
     public Stock getData(long companyId,Date reportDay,Map<String, Map> data) throws Exception {
-
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Stock stock = new Stock();
-
         Map<String, Map> collectionDates = data.get(NAME_OF_COLLECTION_DATES);
-        Map<String, String> collectionPricesPerDay = collectionDates.get(reportDay);
+        Map<String, String> collectionPricesPerDay = collectionDates.get(dateFormat.format(reportDay));
         if(collectionPricesPerDay == null) throw new Exception("Not found for this date");
 
         String openPrice = collectionPricesPerDay.get(OPEN_PRICE_KEY);

@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import springboot.adapters.DataProvider;
-import springboot.adapters.DataProviderImpl;
+import springboot.adapters.CompanyStocksAdapter;
+import springboot.adapters.CompanyStocksAdapterImpl;
 import springboot.config.AlphavantageConf;
 import springboot.dao.CompanyDao;
 import springboot.dao.StockDao;
@@ -22,37 +22,38 @@ import java.util.Map;
  * Created by ilya on Sep, 2020
  */
 @Component
-public class StocksService {
+public class DataProviderImpl implements DataProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleUpdater.class);
 
     private final RestTemplate restTemplate;
     private final AlphavantageConf alphavantageConf;
-    private final DataProvider dataProvider;
+    private final CompanyStocksAdapter companyStocksAdapter;
     private final StockDao stockDao;
     private final CompanyDao companyDao;
 
-    public StocksService(RestTemplate restTemplate, StockDao stockDao, CompanyDao companyDao, AlphavantageConf alphavantageConf) {
+    public DataProviderImpl(RestTemplate restTemplate, StockDao stockDao, CompanyDao companyDao, AlphavantageConf alphavantageConf) {
         this.stockDao = stockDao;
         this.restTemplate = restTemplate;
         this.companyDao = companyDao;
         this.alphavantageConf = alphavantageConf;
-        this.dataProvider = new DataProviderImpl();
+        this.companyStocksAdapter = new CompanyStocksAdapterImpl();
     }
 
-    public void collectPrices(Date reportDay) {
-        final StringBuilder preparedURLWithParams = new StringBuilder();
-        List<Company> companies = companyDao.getAll();
+    @Override
+    public Map<String, Map> getData(Company company) {
         String apiKey =  this.alphavantageConf.getApikey();
         String url = this.alphavantageConf.getUrl();
+        return restTemplate.getForObject(String.format("%s?function=%s&symbol=%s&apikey=%s", url, Periods.valueOf("WEEKLY").getPeriod(), company.getSymbol(), apiKey), Map.class);
+    }
 
+    @Override
+    public void collectData(Date reportDay) {
+        List<Company> companies = companyDao.getAll();
         for(Company company : companies) {
-            preparedURLWithParams.append(String.format("%s?function=%s&symbol=%s&apikey=%s", url, Periods.valueOf("WEEKLY").getPeriod(), company.getSymbol(), apiKey));
-            Map<String, Map> data = restTemplate.getForObject(preparedURLWithParams.toString(), Map.class);
             try {
-                Stock stock = dataProvider.getData(company.getId(), reportDay, data);
+                Stock stock = companyStocksAdapter.getData(company.getId(), reportDay, this.getData(company));
                 saveData(stock);
-                preparedURLWithParams.setLength(0);
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
