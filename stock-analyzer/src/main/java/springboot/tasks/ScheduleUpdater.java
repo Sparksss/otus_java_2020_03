@@ -18,7 +18,7 @@ public class ScheduleUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleUpdater.class);
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private final StocksService stocksService;
 
