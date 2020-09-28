@@ -11,7 +11,7 @@ import java.util.Map;
 public class CompanyStocksAdapterImpl implements CompanyStocksAdapter {
 
 
-    private final String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
+    private final static String NAME_OF_COLLECTION_DATES = "Weekly Time Series";
 
     private static final String OPEN_PRICE_KEY = "1. open";
     private static final String HIGH_PRICE_KEY = "2. high";
