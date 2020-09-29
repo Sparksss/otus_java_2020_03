@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome home page</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <h1>Welcome Home page</h1>
+    <div class="container">
+        <ul class="">
+            <li><label for="company_name">Название компании</label>
+                <input id="company_name" type="text" placeholder="введите название">
+            </li>
+            <li>
+                <label for="select_date">Выберите дату</label>
+                <input type="date" name="select_date" id="select_date">
+            </li>
+            <li>
+                <button type="button" id="select">Выбрать</button>
+            </li>
+        </ul>
+
+    </div>
     <script src="/js/app.js"></script>
 </body>
 </html>
