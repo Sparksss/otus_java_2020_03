@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, beans
+spring:
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/stocks
+    username: stocks
+    password: stocks
+    driverClassName: org.postgresql.Driver
+schedule:
+  fixedRate: 5000
+alphavantage:
+    apikey: S1RP7VOYRC84TD3Z
+    url: https://www.alphavantage.co/query
